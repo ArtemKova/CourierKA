@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.ka.courierka.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_forgotenPassFragment"
+            app:destination="@id/forgotenPassFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/forgotenPassFragment"
+        android:name="com.ka.courierka.forgot.ForgotenPassFragment"
+        android:label="fragment_forgoten_pass"
+        tools:layout="@layout/fragment_forgoten_pass" >
+        <action
+            android:id="@+id/action_forgotenPassFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.ka.courierka.register.RegisterFragment"
+        android:label="fragment_register"
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_registerFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userFragment"
+        android:name="com.ka.courierka.courier.UserFragment"
+        android:label="fragment_user"
+        tools:layout="@layout/fragment_user" >
+        <action
+            android:id="@+id/action_userFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_userFragment_to_newOrderFragment"
+            app:destination="@id/newOrderFragment" />
+        <action
+            android:id="@+id/action_userFragment_to_statusUser"
+            app:destination="@id/statusUser" />
+        <action
+            android:id="@+id/action_userFragment_to_orderFragment"
+            app:destination="@id/orderFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newOrderFragment"
+        android:name="com.ka.courierka.order.NewOrderFragment"
+        android:label="fragment_new_order"
+        tools:layout="@layout/fragment_new_order" >
+        <action
+            android:id="@+id/action_newOrderFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/statusUser"
+        android:name="com.ka.courierka.courier.StatusUser"
+        android:label="fragment_status_user"
+        tools:layout="@layout/fragment_status_user" >
+        <action
+            android:id="@+id/action_statusUser_to_userFragment"
+            app:destination="@id/userFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderFragment"
+        android:name="com.ka.courierka.OrderFragment"
+        android:label="fragment_order"
+        tools:layout="@layout/fragment_order" />
+</navigation>

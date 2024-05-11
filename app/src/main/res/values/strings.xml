@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">CourierKA</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="courier">Courier</string>
+    <string name="your_email">Your email</string>
+    <string name="your_password">Password</string>
+    <string name="email">Email</string>
+    <string name="password">Your password</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="forgot_password_title">Forgot password?</string>
+    <string name="register">Register</string>
+    <string name="name">Name</string>
+    <string name="registration">Registration</string>
+    <string name="user">User</string>
+    <string name="last_name">Last Name</string>
+    <string name="age">Age</string>
+    <string name="city">City</string>
+    <string name="sign_up">Sign up</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="reset_password">Reset password</string>
+    <string name="logout">Logout</string>
+    <string name="status">Status</string>
+    <string name="reset_link">The reset link has successfully sent</string>
+    <string name="type_your_message">Type your message</string>
+    <string name="new_order">New order</string>
+    <string name="name_customer">Name customer</string>
+    <string name="delivery_address">Delivery address</string>
+    <string name="phone">Phone number</string>
+    <string name="time_delivery">Delivery time</string>
+    <string name="payment">Payment</string>
+    <string name="оrder_type">Order type</string>
+    <string name="оrder_delivery">Order delivery</string>
+    <string name="order_receipt_address">Order receipt address</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="typeCourier">
+        <item>Customer</item>
+        <item>Courier</item>
+    </string-array>
+</resources>
