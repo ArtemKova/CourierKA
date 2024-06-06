@@ -7,17 +7,21 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
+
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.ka.courierka.R
+import com.ka.courierka.coin.repo.TypeViewModel
 import com.ka.courierka.helper.isCorrectDestinationNow
-import com.ka.courierka.order.NewOrderFragment
+import com.ka.courierka.order.neworder.NewOrderFragment
 import com.ka.courierka.order.Order
+import com.ka.courierka.order.order.OrderFragment
+import org.koin.android.scope.AndroidScopeComponent
+import org.koin.androidx.scope.fragmentScope
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.scope.Scope
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,17 +33,22 @@ private const val ARG_PARAM2 = "param2"
  * Use the [UserFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class UserFragment : Fragment() {
+class UserFragment : Fragment(), AndroidScopeComponent {
+    override val scope: Scope by fragmentScope()
+    private val viewModel1 by viewModel<TypeViewModel>()
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private var requiredDestinationId = 0
+    private var typeOrders = arrayListOf<String>()
     private lateinit var recyclerViewUser: RecyclerView
     private lateinit var linearLayout: LinearLayout
     private lateinit var neworder: Button
+    private lateinit var oldorders: Button
     private lateinit var usersAdapter: UsersAdapter
     private lateinit var currentUserId: String
     private lateinit var viewModel: UsersViewModel
+    private  var deliv:Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +59,8 @@ class UserFragment : Fragment() {
             currentUserId = param1.toString()
         }
         viewModel = ViewModelProvider(this)[UsersViewModel::class.java]
+        viewModel1.doNetworkCall()
+
         setHasOptionsMenu(true);
     }
 
@@ -61,9 +72,16 @@ class UserFragment : Fragment() {
         requiredDestinationId = R.id.userFragment
         linearLayout = view.findViewById(R.id.linearLayout)
         neworder = view.findViewById(R.id.neworder)
+        oldorders = view.findViewById(R.id.oldorder)
         recyclerViewUser = view.findViewById(R.id.recyclerViewUsers)
         usersAdapter = UsersAdapter()
         recyclerViewUser.adapter = usersAdapter
+        if (oldorders.text.equals("Old orders")){
+            deliv = false
+        } else {
+            deliv = true
+        }
+        observeLiveData()
         // Inflate the layout for this fragment
         return view
 
@@ -71,24 +89,39 @@ class UserFragment : Fragment() {
     }
 
     fun initViews() {
+
         neworder.setOnClickListener() {
             goToNewOrder()
+        }
+        oldorders.setOnClickListener {
+            if (oldorders.text.equals("Old orders")){
+                oldorders.text = "Orders"
+                deliv = true
+            } else {
+                oldorders.text = "Old orders"
+                deliv = false
+            }
         }
     }
 
     fun observeViewModel() {
         viewModel.getUser().observe(viewLifecycleOwner) {
-            Log.d("iduid","${it.uid}   $currentUserId" )
-            Toast.makeText(activity,"${it.uid}\n $currentUserId",Toast.LENGTH_SHORT).show()
             if (it == null) {
                 goToLogin()
             }
         }
         viewModel.getOrders().observe(viewLifecycleOwner) {
-            usersAdapter.setUsers(it)
+            var orders = mutableListOf<Order>()
+            for (order in it){
+                if (deliv == order.delivered) {
+                    orders.add(order)
+                }
+            }
+            usersAdapter.setUsers(orders)
             usersAdapter.onUserClickListener = object : UsersAdapter.OnUserClickListener {
-                override fun onUserClick(user: Order) {
-//                    goToChat(user)
+                override fun onUserClick(order: Order) {
+                    Log.d("Look_id4","${order.id}")
+                    goToOrder(order)
                 }
             }
         }
@@ -97,7 +130,7 @@ class UserFragment : Fragment() {
                 viewModel.logout()
             }
 
-            Toast.makeText(activity,"$it",Toast.LENGTH_SHORT).show()
+
             if (it[0].courier){
                 linearLayout.visibility = GONE
             }
@@ -123,10 +156,33 @@ class UserFragment : Fragment() {
     private fun goToNewOrder() {
         val currentDestination = findNavController().currentDestination?.id
         if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
-            val args = NewOrderFragment.newInstance(currentUserId,"")
+            val args = NewOrderFragment.newInstance(currentUserId,typeOrders )
             findNavController().navigate(R.id.action_userFragment_to_newOrderFragment, args.arguments)
         }
     }
+    private fun goToOrder(order:Order){
+        val currentDestination = findNavController().currentDestination?.id
+        if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
+            val args = OrderFragment.newInstance(
+                 order.id,
+                 order.name,
+                 order.phone,
+                 order.adress,
+                 order.recadress,
+                 order.customer_id,
+                 order.time,
+                 order.isPay,
+                 order.courier,
+                 order.city,
+                 order.typeOrder,
+                 order.delivered,
+                currentUserId
+
+                )
+            findNavController().navigate(R.id.action_userFragment_to_orderFragment, args.arguments)
+        }
+    }
+
     private fun goToStatusUser() {
         val currentDestination = findNavController().currentDestination?.id
         if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
@@ -185,7 +241,31 @@ class UserFragment : Fragment() {
         viewModel.setUserOnLine(false)
 
     }
+    private fun observeLiveData(){
+        viewModel1.modelItem.observe(viewLifecycleOwner) { item ->
+            item?.let {items->
+                items.data?.forEach {item->
+                    println("id: ${item.id}")
+                    Log.d("itemCoin","id: ${item.id}")
+                    typeOrders.add(item.typeorder)
+                    println("type: ${item.typeorder}")
+                    Log.d("itemCoin","type: ${item.typeorder}")
 
+
+
+                }
+                Log.d("itemCoin","All: ${typeOrders[0]}")
+                Log.d("itemCoin","All: ${typeOrders[1]}")
+                Log.d("itemCoin","All: ${typeOrders[2]}")
+                Log.d("itemCoin","All: ${typeOrders[3]}")
+                Log.d("itemCoin","All: ${typeOrders[4]}")
+                Log.d("itemCoin","All: ${typeOrders[5]}")
+                Log.d("itemCoin","All: ${typeOrders[6]}")
+            }
+        }
+
+
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of

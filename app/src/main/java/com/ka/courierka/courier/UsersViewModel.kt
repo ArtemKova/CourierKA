@@ -1,6 +1,7 @@
 package com.ka.courierka.courier
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -20,7 +21,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-class UsersViewModel(application: Application) : AndroidViewModel(application) {
+class UsersViewModel(application: Application
+
+) : AndroidViewModel(application) {
 
     private var auth = FirebaseAuth.getInstance()
     private var user = MutableLiveData<FirebaseUser>()
@@ -41,6 +44,7 @@ class UsersViewModel(application: Application) : AndroidViewModel(application) {
     private val getOrderItemUseCase = GetOrderItemUseCase(repository)
  
 
+//constructor(auth: FirebaseAuth, user: FirebaseUser, application: Application) : this(application)
 
     fun getUser(): LiveData<FirebaseUser> {
         auth.addAuthStateListener {
@@ -190,12 +194,11 @@ class UsersViewModel(application: Application) : AndroidViewModel(application) {
 //                        if (currentUser != null) {999+999999999++66689+9+
 //                            if (!value.id.equals(currentUser.uid)&&value.courier!=tC) {
                                 users1.add(value)
+                        Log.d("Look_id5","${value.id}")
                         viewModelScope.launch {
                             addOrderItemUseCase.addOrderItem(value)
                         }
 //                        orderListDao.addOrderItem(mapper.mapOrderToDBOrder(value))
-
-
 //                            }
 //                        }
                     }
@@ -227,6 +230,10 @@ class UsersViewModel(application: Application) : AndroidViewModel(application) {
             return
         }
         myRef.child(firebaseUser.uid).child("onLine").setValue(online)
+
+    }
+
+    fun setGetOrder(order: Order){
 
     }
 

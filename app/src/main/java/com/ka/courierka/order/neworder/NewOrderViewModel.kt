@@ -1,4 +1,4 @@
-package com.ka.courierka.order
+package com.ka.courierka.order.neworder
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.ka.courierka.courier.User
+import com.ka.courierka.order.Order
 
 class NewOrderViewModel : ViewModel() {
     private var auth = FirebaseAuth.getInstance()
@@ -31,18 +31,19 @@ class NewOrderViewModel : ViewModel() {
         }
         return user
     }
-
-    fun createOrder(order: Order) {
+    fun setOrderId(): String? {
+        return ordersRefernce.push().key
+    }
+    fun createOrder(order: Order)   {
         ordersRefernce
-            .push()
-            .setValue(order) 
+            .child(order.id)
+            .setValue(order)
             .addOnSuccessListener(object : OnSuccessListener<Void>{
                 override fun onSuccess(p0: Void?) {
+
 //                    TODO("Not yet implemented")
                 }
 
             })
-
-
     }
 }

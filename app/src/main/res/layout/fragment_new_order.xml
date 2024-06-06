@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".order.NewOrderFragment">
+    tools:context=".order.neworder.NewOrderFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -77,14 +77,19 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:hint="@string/city"/>
+            <Spinner
+                android:id="@+id/spinnerTypeOrder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
 
             <EditText
                 android:id="@+id/editTypeOrder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:hint="@string/оrder_type"/>
-
+                android:hint="@string/оrder_type" />
 
             <Button
                 android:id="@+id/buttonDelivery"
@@ -92,6 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:text="@string/оrder_delivery" />
+
         </LinearLayout>
     </ScrollView>
 

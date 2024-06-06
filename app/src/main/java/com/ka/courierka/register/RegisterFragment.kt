@@ -13,7 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.ka.courierka.R
 import com.ka.courierka.helper.isCorrectDestinationNow
-import com.ka.courierka.order.NewOrderFragment
+import com.ka.courierka.login.LoginFragment
+import com.ka.courierka.order.neworder.NewOrderFragment
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -101,7 +102,7 @@ class RegisterFragment : Fragment() {
     private fun goToLogin() {
         val currentDestination = findNavController().currentDestination?.id
         if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
-            val args = NewOrderFragment.newInstance(getTrimmedValue(editTextEmail),getTrimmedValue(editTextPassword))
+            val args = LoginFragment.newInstance(getTrimmedValue(editTextEmail),getTrimmedValue(editTextPassword))
             findNavController().navigate(R.id.action_registerFragment_to_loginFragment, args.arguments)
         }
     }

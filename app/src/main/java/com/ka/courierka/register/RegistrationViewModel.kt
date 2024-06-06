@@ -41,11 +41,7 @@ class RegistrationViewModel: ViewModel() {
         age:Int,
         city:String,
         courier:Boolean
-
-
-
-
-    ){
+ ){
        auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener {
            var firebaseUser = it.user
            var user = firebaseUser?.let { it1 ->

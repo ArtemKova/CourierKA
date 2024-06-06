@@ -61,7 +61,7 @@
     </fragment>
     <fragment
         android:id="@+id/newOrderFragment"
-        android:name="com.ka.courierka.order.NewOrderFragment"
+        android:name="com.ka.courierka.order.neworder.NewOrderFragment"
         android:label="fragment_new_order"
         tools:layout="@layout/fragment_new_order" >
         <action
@@ -79,7 +79,11 @@
     </fragment>
     <fragment
         android:id="@+id/orderFragment"
-        android:name="com.ka.courierka.OrderFragment"
+        android:name="com.ka.courierka.order.order.OrderFragment"
         android:label="fragment_order"
-        tools:layout="@layout/fragment_order" />
+        tools:layout="@layout/fragment_order" >
+        <action
+            android:id="@+id/action_orderFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+    </fragment>
 </navigation>
