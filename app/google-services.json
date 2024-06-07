@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "316154458478",
+    "project_id": "courierka-3393e",
+    "storage_bucket": "courierka-3393e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:316154458478:android:341361d56446f6a2d1517f",
+        "android_client_info": {
+          "package_name": "com.ka.courierka"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZkwjcTsI_1eHJsj6Vzj8bD6GEau_nHP8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
