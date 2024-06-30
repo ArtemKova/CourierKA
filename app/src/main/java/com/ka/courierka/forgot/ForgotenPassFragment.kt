@@ -8,31 +8,36 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import com.ka.courierka.R
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val EMAIL = "email"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ForgotenPassFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ForgotenPassFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-    private lateinit var editTextEmail: EditText
-    private lateinit var buttonResetPassword: Button
+    private var email: String? = null
     private lateinit var viewModel: ResetPasswordViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            email = it.getString(EMAIL).toString()
         }
     }
 
@@ -41,28 +46,45 @@ class ForgotenPassFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_forgoten_pass, container, false)
+        return ComposeView(requireContext()).apply {
+
+
+            setContent {
+                val email1 = remember { mutableStateOf("") }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.forgot_password_title),
+                        fontSize = 40.sp,
+                        color = colorResource(id = R.color.purple_500),
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                    TextField(value = email1.value, onValueChange = { email2 ->
+                        email1.value = email2
+                        email = email1.value
+                    }, placeholder = { Text("Email") }, modifier = Modifier.padding(10.dp).fillMaxWidth())
+                    Button(
+                        onClick = { viewModel.ResetPassword(email1.value) },
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier.padding(10.dp).fillMaxWidth()
+                    ) { Text(stringResource(id = R.string.reset_password), fontSize = 28.sp) }
+                }
+            }
+        }
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[ResetPasswordViewModel::class.java]
-        InitViews(view)
-    }
-
-    private fun InitViews(view: View) {
-        editTextEmail = view.findViewById(R.id.editTextEmail)
-        buttonResetPassword = view.findViewById(R.id.buttonResetPassword)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         observeViewModel()
-        editTextEmail.setText(param1)
-        buttonResetPassword.setOnClickListener {
-            var email = editTextEmail.text.toString().trim()
-            viewModel.ResetPassword(email)
-        }
     }
+
     fun observeViewModel() {
         viewModel.getError().observe(viewLifecycleOwner) {
 
@@ -70,28 +92,20 @@ class ForgotenPassFragment : Fragment() {
                 Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
             }
         }
-        viewModel.isSuccess().observe(viewLifecycleOwner){
-            if (it){
+        viewModel.isSuccess().observe(viewLifecycleOwner) {
+            if (it) {
                 Toast.makeText(activity, getString(R.string.reset_link), Toast.LENGTH_SHORT).show()
             }
         }
     }
+
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ForgotenPassFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+
+        fun newInstance(email: String) =
             ForgotenPassFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putString(EMAIL, email)
+
                 }
             }
     }

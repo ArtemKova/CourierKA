@@ -1,4 +1,4 @@
-package com.ka.courierka.coin
+package com.ka.courierka.di
 
 import retrofit2.Response
 import retrofit2.http.GET

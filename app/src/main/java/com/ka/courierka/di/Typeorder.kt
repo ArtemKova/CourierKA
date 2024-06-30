@@ -1,4 +1,4 @@
-package com.ka.courierka.coin
+package com.ka.courierka.di
 
 import com.google.gson.annotations.SerializedName
 

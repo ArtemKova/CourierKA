@@ -1,9 +1,9 @@
-package com.ka.courierka.coin
+package com.ka.courierka.di
 
 import android.app.Application
-import com.ka.courierka.coin.repo.Repository
-import com.ka.courierka.coin.repo.RepositoryImpl
-import com.ka.courierka.coin.repo.TypeViewModel
+import com.ka.courierka.di.repo.Repository
+import com.ka.courierka.di.repo.RepositoryImpl
+import com.ka.courierka.di.repo.TypeViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.GlobalContext.startKoin

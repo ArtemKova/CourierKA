@@ -1,8 +1,8 @@
-package com.ka.courierka.coin.repo
+package com.ka.courierka.di.repo
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.ka.courierka.coin.Typeorder
+import com.ka.courierka.di.Typeorder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

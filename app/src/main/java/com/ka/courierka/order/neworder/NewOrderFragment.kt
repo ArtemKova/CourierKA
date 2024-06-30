@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.ka.courierka.R
-import com.ka.courierka.coin.repo.TypeViewModel
+import com.ka.courierka.di.repo.TypeViewModel
 import com.ka.courierka.courier.UserFragment
 import com.ka.courierka.helper.isCorrectDestinationNow
 import com.ka.courierka.order.Order

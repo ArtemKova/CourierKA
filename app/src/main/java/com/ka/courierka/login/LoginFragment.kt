@@ -10,6 +10,28 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.ka.courierka.R
@@ -17,35 +39,19 @@ import com.ka.courierka.courier.UserFragment
 import com.ka.courierka.forgot.ForgotenPassFragment
 import com.ka.courierka.helper.isCorrectDestinationNow
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val EMAIL = "email"
+private const val PASS = "pass"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [LoginFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class LoginFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
     private var requiredDestinationId = 0
-    private lateinit var textViewTitle: TextView
-    private lateinit var editTextEmail: EditText
-    private lateinit var editTextPassword: EditText
-    private lateinit var buttonLogin: Button
-    private lateinit var textViewForgotPassword: TextView
-    private lateinit var textViewRegister: TextView
-    private lateinit var viewModel:LoginViewModel
-
-
+    private lateinit var viewModel: LoginViewModel
+    private var email1 = ""
+    private var pass = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            email1 = it.getString(EMAIL).toString()
+            pass = it.getString(PASS).toString()
         }
     }
 
@@ -53,9 +59,61 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_login, container, false)
-        // Inflate the layout for this fragment
+//         Inflate the layout for this fragment
+        val view = ComposeView(requireContext()).apply {
+            setContent {
+                val email = remember { mutableStateOf("") }
+                val password = remember { mutableStateOf("") }
+//        val view = inflater.inflate(R.layout.fragment_login, container, false).apply {
+//            findViewById<ComposeView>(R.id.composeView).setContent {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.courier),
+                        fontSize = 40.sp,
+                        color = colorResource(id = R.color.purple_500),
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                    TextField(value = email.value, onValueChange = { email2 ->
+                        email.value = email2
+                        email1 = email.value
+                    }, placeholder = { Text("Email") }, modifier = Modifier.padding(10.dp).fillMaxWidth())
+                    TextField(value = password.value, onValueChange = { pas ->
+                        password.value = pas
+                        pass = password.value
+                    }, placeholder = { Text("Password") }, modifier = Modifier.padding(10.dp).fillMaxWidth())
+                    Button(
+                        onClick = { viewModel.login(email1, pass) },
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier.padding(10.dp).fillMaxWidth()
+                    ) { Text(stringResource(id = R.string.login), fontSize = 28.sp) }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.forgot_password),
+                            modifier = Modifier
+                                .clickable(onClick = { goToForgotPass() })
+                                .padding(10.dp)
+                        )
+                        Text(
+                            text = stringResource(id = R.string.register),
+                            modifier = Modifier
+                                .clickable(onClick = { goToRegister() })
+                                .padding(10.dp)
+                        )
+
+
+                    }
+                }
+            }
+        }
         requiredDestinationId = R.id.loginFragment
         return view
     }
@@ -63,44 +121,10 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
-        InitViews(view)
-    }
-
-    private fun InitViews(view: View) {
-        textViewTitle = view.findViewById(R.id.textViewTitle)
-        editTextEmail = view.findViewById(R.id.editTextEmail)
-        editTextPassword = view.findViewById(R.id.editTextPassword)
-        buttonLogin = view.findViewById(R.id.buttonLogin)
-        textViewForgotPassword = view.findViewById(R.id.textViewForgotPassword)
-        textViewRegister = view.findViewById(R.id.textViewRegister)
-        if (param1!=null){editTextEmail.setText(param1)}
-        if (param2!=null){editTextPassword.setText(param2)}
-
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         observeViewModel()
-        setupClickListners()
-
-
     }
 
-    private fun setupClickListners(){
-        buttonLogin.setOnClickListener {
-            var email = editTextEmail.text.toString().trim()
-            var password = editTextPassword.text.toString().trim()
-            viewModel.login(email,password)
 
-        }
-        textViewForgotPassword.setOnClickListener {
-            goToForgotPass()
-        }
-        textViewRegister.setOnClickListener {
-            goToRegister()
-        }
-    }
     private fun goToRegister() {
         val currentDestination = findNavController().currentDestination?.id
         if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
@@ -111,29 +135,32 @@ class LoginFragment : Fragment() {
     private fun goToForgotPass() {
         val currentDestination = findNavController().currentDestination?.id
         if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
-            val args = ForgotenPassFragment.newInstance(editTextEmail.text.toString(),"")
-            findNavController().navigate(R.id.action_loginFragment_to_forgotenPassFragment, args.arguments)
+            val args = ForgotenPassFragment.newInstance(email1)
+            findNavController().navigate(
+                R.id.action_loginFragment_to_forgotenPassFragment,
+                args.arguments
+            )
         }
     }
-    private fun goToUser(id:String) {
-        Log.d("iduid2","${id}  " )
+
+    private fun goToUser(id: String) {
+        Log.d("iduid2", "${id}  ")
         val currentDestination = findNavController().currentDestination?.id
         if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
-            val args = UserFragment.newInstance(id,"")
-            findNavController().navigate(R.id.action_loginFragment_to_userFragment,args.arguments)
+            val args = UserFragment.newInstance(id, "")
+            findNavController().navigate(R.id.action_loginFragment_to_userFragment, args.arguments)
         }
 
     }
-    fun observeViewModel(){
-        viewModel.getError().observe(viewLifecycleOwner){
 
-            if (it!=null) {
+    fun observeViewModel() {
+        viewModel.getError().observe(viewLifecycleOwner) {
+            if (it != null) {
                 Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
             }
         }
-
-        viewModel.getUser().observe(viewLifecycleOwner){
-            if (it!=null) {
+        viewModel.getUser().observe(viewLifecycleOwner) {
+            if (it != null) {
                 goToUser(it.uid)
             }
         }
@@ -141,21 +168,12 @@ class LoginFragment : Fragment() {
 
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment LoginFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(email: String, pass: String) =
             LoginFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putString(EMAIL, email)
+                    putString(PASS, pass)
                 }
             }
     }

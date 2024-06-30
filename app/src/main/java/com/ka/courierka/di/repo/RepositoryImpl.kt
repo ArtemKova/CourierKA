@@ -1,7 +1,7 @@
-package com.ka.courierka.coin.repo
+package com.ka.courierka.di.repo
 
-import com.ka.courierka.coin.Apifortype
-import com.ka.courierka.coin.Typeorder
+import com.ka.courierka.di.Apifortype
+import com.ka.courierka.di.Typeorder
 
 class RepositoryImpl(private val api: Apifortype) : Repository{
     override suspend fun doNetworkCall(): Resource<List<Typeorder>> {

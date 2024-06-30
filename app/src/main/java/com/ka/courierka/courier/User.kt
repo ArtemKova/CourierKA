@@ -1,6 +1,6 @@
 package com.ka.courierka.courier
 
-class User (
+data class User (
     var id:String="",
     var name:String="",
     var lastName:String="",
@@ -11,4 +11,5 @@ class User (
     override fun toString(): String {
         return "User(id='$id', name='$name', lastName='$lastName', age=$age, isOnLine=$isOnLine, courier=$courier, city='$city')"
     }
+
 }
