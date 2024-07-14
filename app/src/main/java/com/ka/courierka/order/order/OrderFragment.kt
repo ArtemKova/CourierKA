@@ -34,7 +34,7 @@ import androidx.navigation.fragment.findNavController
 import com.ka.courierka.R
 import com.ka.courierka.courier.UserFragment
 import com.ka.courierka.helper.isCorrectDestinationNow
-import com.ka.courierka.order.Order
+import com.example.data.data.Order
 
 private const val ORDER = "order"
 private const val CUR_ID = "currentUserId"

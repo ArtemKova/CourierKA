@@ -1,5 +1,7 @@
 package com.ka.courierka.courier
 
+import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -8,6 +10,7 @@ import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,39 +27,58 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateListOf
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.ka.courierka.R
-import com.ka.courierka.di.repo.TypeViewModel
+import com.ka.courierka.dependencyinjection.repo.TypeViewModel
 import com.ka.courierka.helper.isCorrectDestinationNow
 import com.ka.courierka.order.neworder.NewOrderFragment
-import com.ka.courierka.order.Order
+import com.example.data.data.Order
 import com.ka.courierka.order.order.OrderFragment
-import org.koin.android.scope.AndroidScopeComponent
-import org.koin.androidx.scope.fragmentScope
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.scope.Scope
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.reduce
+import kotlinx.coroutines.flow.toSet
+import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val CUR_ID = "currentUserId"
 
-
-class UserFragment : Fragment(), AndroidScopeComponent {
-    override val scope: Scope by fragmentScope()
-    private val viewModel1 by viewModel<TypeViewModel>()
+@AndroidEntryPoint
+class UserFragment : Fragment() {
+    //    override val scope: Scope by fragmentScope()
+    private val viewModel1: TypeViewModel by viewModels()
+    lateinit var viewModel: UsersViewModel
 
     // TODO: Rename and change types of parameters
     private var requiredDestinationId = 0
@@ -64,9 +86,13 @@ class UserFragment : Fragment(), AndroidScopeComponent {
     private lateinit var recyclerViewUser: RecyclerView
     private lateinit var usersAdapter: UsersAdapter
     private lateinit var currentUserId: String
-    private lateinit var viewModel: UsersViewModel
+
     private var deliv: Boolean = false
     var orders = mutableListOf<Order>()
+    var orders1 = mutableListOf<Order>()
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,11 +111,25 @@ class UserFragment : Fragment(), AndroidScopeComponent {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         requiredDestinationId = R.id.userFragment
         observeLiveData()
-        observeViewModel()
+
         var view = ComposeView(requireContext()).apply {
             setContent {
+                observeViewModel()
+                val _sharedFlow = MutableSharedFlow<MutableList<Order>>()
+                val sharedFlow = _sharedFlow.asSharedFlow()
+                val coroutineScope = rememberCoroutineScope()
+                LaunchedEffect(Unit) {
+                    coroutineScope.launch() {
+                        for (i in 1..5) {
+                            viewModel.getOrders().value?.let { _sharedFlow.emit(it) }
+                        }
+
+                    }
+                }
+
                 var oo = stringResource(id = R.string.old_order)
                 var oldorder = remember { mutableStateOf(oo) }
                 Log.d("itemCoin1", "Order: ${orders}")
@@ -109,7 +149,7 @@ class UserFragment : Fragment(), AndroidScopeComponent {
                         ) { Text(stringResource(id = R.string.new_order), fontSize = 28.sp) }
                         Button(
                             onClick = {
-                                observeViewModel()
+
                                 if (oldorder.value.equals("Old order")) {
                                     oldorder.value = "Orders"
                                     deliv = false
@@ -117,39 +157,21 @@ class UserFragment : Fragment(), AndroidScopeComponent {
                                     oldorder.value = "Old order"
                                     deliv = true
                                 }
-                                observeViewModel()
+
                             },
                             shape = RoundedCornerShape(10.dp),
                             modifier = Modifier.padding(10.dp)
                         ) { Text(oldorder.value, fontSize = 28.sp) }
                     }
-                    LazyColumn {
-                        observeViewModel()
-                        items(orders) { order ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(150.dp)
-                                    .clickable(onClick = { goToOrder(order) }),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-
-                                ) {
-                                Text(
-                                    text = String.format(
-                                        "%s %s, %s",
-                                        order.name,
-                                        order.phone,
-                                        order.time
-                                    )
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .size(10.dp)
-                                        .background(color = Color.Red)
-                                )
-                            }
-                        }
-                    }
+                    val owner = LocalViewModelStoreOwner.current
+                    owner?.let {
+                    val viewModel1: UsersViewModel = viewModel(
+                        it,
+                        "UserViewModel",
+                       OrderViewModelFactory(LocalContext.current.applicationContext as Application)
+                    )
+                    OrdersList(viewModel1)}
+//
                 }
             }
         }
@@ -158,7 +180,41 @@ class UserFragment : Fragment(), AndroidScopeComponent {
         return view
     }
 
+    @Composable
+    fun OrdersList(vm: UsersViewModel = viewModel()) {
+        val orderes by vm.getOrders().observeAsState(listOf())
 
+        LazyColumn {
+            items(orderes) { order ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.LightGray)
+                        .border(width = 2.dp, color = Color.White)
+                        .height(50.dp)
+                        .clickable(onClick = { goToOrder(order) }),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+
+                    ) {
+                    Text(
+                        text = String.format(
+                            "%s %s, %s",
+                            order.name,
+                            order.phone,
+                            order.time
+                        ),
+                        fontSize=18.sp
+                    )
+                    Box(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .background(color = Color.Red)
+                    )
+                }
+            }
+        }
+    }
+    @Composable
     fun observeViewModel() {
         viewModel.getUser().observe(viewLifecycleOwner) {
             if (it == null) {
@@ -167,6 +223,7 @@ class UserFragment : Fragment(), AndroidScopeComponent {
         }
         viewModel.getOrders().observe(viewLifecycleOwner) {
             orders = it
+
 //            for (order in it) {
 //                if (deliv == order.delivered) {
 //                    orders.add(order)
@@ -247,14 +304,6 @@ class UserFragment : Fragment(), AndroidScopeComponent {
 //
 //    }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-//        observeViewModel()
-
-
-    }
 
     @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

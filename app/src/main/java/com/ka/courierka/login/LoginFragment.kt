@@ -59,7 +59,6 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//         Inflate the layout for this fragment
         val view = ComposeView(requireContext()).apply {
             setContent {
                 val email = remember { mutableStateOf("") }
@@ -147,7 +146,7 @@ class LoginFragment : Fragment() {
         Log.d("iduid2", "${id}  ")
         val currentDestination = findNavController().currentDestination?.id
         if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
-            val args = UserFragment.newInstance(id, "")
+            val args = UserFragment.newInstance(id)
             findNavController().navigate(R.id.action_loginFragment_to_userFragment, args.arguments)
         }
 

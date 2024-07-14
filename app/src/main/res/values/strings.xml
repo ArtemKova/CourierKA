@@ -38,8 +38,11 @@
     <string name="get_order">Get order</string>
     <string name="taken_order">The order has been taken</string>
     <string name="order_receipt_address">Order receipt address</string>
+    <string name="order1">1</string>
+    <string name="order2">Electronics</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="courierka">CourierKA</string>
     <string-array name="typeCourier">
         <item>Customer</item>
         <item>Courier</item>

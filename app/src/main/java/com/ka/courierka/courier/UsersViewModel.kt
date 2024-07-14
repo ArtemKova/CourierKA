@@ -11,18 +11,22 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import com.ka.courierka.data.AppDataBase
-import com.ka.courierka.data.OrderListMapper
-import com.ka.courierka.data.OrderListRepositoryImpl
-import com.ka.courierka.domain.*
-import com.ka.courierka.order.Order
+import com.example.data.data.AppDataBase
+import com.example.data.data.Order
+import com.example.data.data.OrderListMapper
+import com.example.data.data.OrderListRepositoryImpl
+import com.example.data.domain.AddOrderItemUseCase
+import com.example.data.domain.DeleteOrderItemUseCase
+import com.example.data.domain.EditOrderItemUseCase
+import com.example.data.domain.GetOrderItemUseCase
+import com.example.data.domain.GetOrderListUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-class UsersViewModel(application: Application
-
+class UsersViewModel(
+    application: Application
 ) : AndroidViewModel(application) {
 
     private var auth = FirebaseAuth.getInstance()
@@ -34,7 +38,8 @@ class UsersViewModel(application: Application
     private val database = Firebase.database
     private val myRef = database.getReference("Users")
     private val myOrder = database.getReference("Orders")
-    private val orderListDao = AppDataBase.getInstance(application).orderListDao()
+    private val userDb =  AppDataBase.getInstance(application)
+    private val orderListDao = userDb.orderListDao()
     private val mapper = OrderListMapper()
     private val repository = OrderListRepositoryImpl(application)
     private val getOrderListUseCase = GetOrderListUseCase(repository)
@@ -42,8 +47,10 @@ class UsersViewModel(application: Application
     private val addOrderItemUseCase = AddOrderItemUseCase(repository)
     private val editOrderItemUseCase = EditOrderItemUseCase(repository)
     private val getOrderItemUseCase = GetOrderItemUseCase(repository)
- 
 
+init {
+//    orders = repository.orderList as MutableLiveData<MutableList<Order>>
+}
 //constructor(auth: FirebaseAuth, user: FirebaseUser, application: Application) : this(application)
 
     fun getUser(): LiveData<FirebaseUser> {
@@ -52,7 +59,8 @@ class UsersViewModel(application: Application
         }
         return user
     }
-    fun getCourier():LiveData<MutableList<User>> {
+
+    fun getCourier(): LiveData<MutableList<User>> {
         var tC = false
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -74,7 +82,7 @@ class UsersViewModel(application: Application
                     }
 
                 }
-                if (users1.isEmpty()){
+                if (users1.isEmpty()) {
                     logout()
                 } else {
 
@@ -91,7 +99,8 @@ class UsersViewModel(application: Application
 
         return users
     }
- fun getCourierK():Boolean{
+
+    fun getCourierK(): Boolean {
         var tC = false
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -110,10 +119,7 @@ class UsersViewModel(application: Application
                             }
                         }
                     }
-
                 }
-
-
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -149,7 +155,7 @@ class UsersViewModel(application: Application
                     var value = datasnapshot.getValue<User>()
                     if (value != null) {
                         if (currentUser != null) {
-                            if (!value.id.equals(currentUser.uid)&&value.courier!=tC) {
+                            if (!value.id.equals(currentUser.uid) && value.courier != tC) {
                                 users1.add(value)
                             }
                         }
@@ -163,49 +169,26 @@ class UsersViewModel(application: Application
                 TODO("Not yet implemented")
             }
         })
-
-
-
         return users
     }
- fun getOrders(): LiveData<MutableList<Order>> {
+    fun getOrders(): LiveData<MutableList<Order>> {
+        viewModelScope.launch {  repository.clear() }
 
-     myOrder.addValueEventListener(object : ValueEventListener {
+
+        myOrder.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-//                var currentUser: FirebaseUser? = auth.currentUser ?: return
                 var users1 = mutableListOf<Order>()
-//                var tC = false
-
-//                for (datasnapshot in snapshot.children) {
-//                    var value = datasnapshot.getValue<Order>()
-//                    if (value != null) {
-//                        if (currentUser != null) {
-//                            if (value.id.equals(currentUser.uid)) {
-//                                tC = value.courier
-//                            }
-//                        }
-//                    }
-//
-//                }
-
                 for (datasnapshot in snapshot.children) {
                     var value = datasnapshot.getValue<Order>()
                     if (value != null) {
-//                        if (currentUser != null) {999+999999999++66689+9+
-//                            if (!value.id.equals(currentUser.uid)&&value.courier!=tC) {
-                                users1.add(value)
-                        Log.d("Look_id5","${value.id}")
+                        users1.add(value)
+                        Log.d("Look_id5", "${value.id}")
                         viewModelScope.launch {
                             addOrderItemUseCase.addOrderItem(value)
                         }
-//                        orderListDao.addOrderItem(mapper.mapOrderToDBOrder(value))
-//                            }
-//                        }
                     }
-
                 }
-                orders.value = users1
-                var orderes = getOrderListUseCase.getOrderList()
+//                orders.value = users1
 
 //                orders = MediatorLiveData<List<Order>>().apply {
 //                    addSource(orderListDao.getOrderList()){
@@ -215,25 +198,36 @@ class UsersViewModel(application: Application
             }
 
             override fun onCancelled(error: DatabaseError) {
+
 //                TODO("Not yet implemented")
             }
         })
-
-
+        var orderes = getOrderListUseCase.getOrderList()
+        orders = orderes as MutableLiveData<MutableList<Order>>
 
         return orders
     }
 
-    fun setUserOnLine(online:Boolean){
+    fun getOrderes(): MutableLiveData<MutableList<Order>> {
+
+        viewModelScope.launch {
+            orders = getOrderListUseCase.getOrderList() as MutableLiveData<MutableList<Order>>
+        }
+
+        return orders
+    }
+
+
+    fun setUserOnLine(online: Boolean) {
         var firebaseUser = auth.currentUser
-        if (firebaseUser==null) {
+        if (firebaseUser == null) {
             return
         }
         myRef.child(firebaseUser.uid).child("onLine").setValue(online)
 
     }
 
-    fun setGetOrder(order: Order){
+    fun setGetOrder(order: Order) {
 
     }
 
@@ -242,9 +236,16 @@ class UsersViewModel(application: Application
         auth.signOut()
     }
 
-    fun setChangeUserData(id:String, name:String, lastName:String, age:Int, city:String, typeCourier:Boolean){
+    fun setChangeUserData(
+        id: String,
+        name: String,
+        lastName: String,
+        age: Int,
+        city: String,
+        typeCourier: Boolean
+    ) {
 
-        myRef.child(id).child("name",).setValue(name)
+        myRef.child(id).child("name").setValue(name)
         myRef.child(id).child("lastName").setValue(lastName)
         myRef.child(id).child("age").setValue(age)
         myRef.child(id).child("city").setValue(city)

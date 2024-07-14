@@ -117,7 +117,7 @@ class StatusUser : Fragment() {
     private fun goToUser(id: String) {
         val currentDestination = findNavController().currentDestination?.id
         if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
-            val args = UserFragment.newInstance(id, "")
+            val args = UserFragment.newInstance(id)
             findNavController().navigate(R.id.action_statusUser_to_userFragment, args.arguments)
         }
 
