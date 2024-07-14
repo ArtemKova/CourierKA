@@ -1,4 +1,4 @@
-package com.ka.courierka.dependencyinjection
+package com.ka.courierka.di
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

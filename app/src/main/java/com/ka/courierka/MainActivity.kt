@@ -5,14 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
-import com.ka.courierka.dependencyinjection.TypViewModel
-import com.ka.courierka.dependencyinjection.TypeOrder
-import com.ka.courierka.dependencyinjection.repo.TypeViewModel
+import com.ka.courierka.di.TypViewModel
+import com.ka.courierka.di.TypeOrder
 
 
 import dagger.hilt.android.AndroidEntryPoint

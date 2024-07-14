@@ -1,4 +1,4 @@
-package com.ka.courierka.dependencyinjection
+package com.ka.courierka.di
 
 import dagger.Module
 import dagger.Provides

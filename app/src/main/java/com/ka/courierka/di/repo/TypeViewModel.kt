@@ -1,15 +1,14 @@
-package com.ka.courierka.dependencyinjection.repo
+package com.ka.courierka.di.repo
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.ka.courierka.dependencyinjection.TypeOrder
+import com.ka.courierka.di.TypeOrder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 @HiltViewModel
 class TypeViewModel @Inject constructor(

@@ -1,7 +1,7 @@
-package com.ka.courierka.dependencyinjection.repo
+package com.ka.courierka.di.repo
 
-import com.ka.courierka.dependencyinjection.TypeOrder
-import com.ka.courierka.dependencyinjection.Apifortype
+import com.ka.courierka.di.TypeOrder
+import com.ka.courierka.di.Apifortype
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor( private val api: Apifortype) : Repository {

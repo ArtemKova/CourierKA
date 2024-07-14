@@ -1,4 +1,4 @@
-package com.ka.courierka.dependencyinjection
+package com.ka.courierka.di
 
 import android.content.Context
 import com.ka.courierka.R

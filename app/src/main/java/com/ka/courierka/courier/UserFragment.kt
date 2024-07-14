@@ -1,14 +1,9 @@
 package com.ka.courierka.courier
 
 import android.app.Application
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import android.widget.Button
-import android.widget.LinearLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,10 +23,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateListOf
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,29 +40,20 @@ import androidx.compose.ui.unit.sp
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.ka.courierka.R
-import com.ka.courierka.dependencyinjection.repo.TypeViewModel
+import com.ka.courierka.di.repo.TypeViewModel
 import com.ka.courierka.helper.isCorrectDestinationNow
 import com.ka.courierka.order.neworder.NewOrderFragment
 import com.example.data.data.Order
 import com.ka.courierka.order.order.OrderFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.reduce
-import kotlinx.coroutines.flow.toSet
 import kotlinx.coroutines.launch
 
 private const val CUR_ID = "currentUserId"

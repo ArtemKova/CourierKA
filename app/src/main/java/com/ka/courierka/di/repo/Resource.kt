@@ -1,4 +1,4 @@
-package com.ka.courierka.dependencyinjection.repo
+package com.ka.courierka.di.repo
 
 data class Resource<out T>(val status: Status, val data: T?, val message: String?) {
 

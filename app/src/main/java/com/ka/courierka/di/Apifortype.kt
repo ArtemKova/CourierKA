@@ -1,4 +1,4 @@
-package com.ka.courierka.dependencyinjection
+package com.ka.courierka.di
 
 import retrofit2.Response
 import retrofit2.Retrofit

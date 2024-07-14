@@ -11,13 +11,12 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
-import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.ka.courierka.R
-import com.ka.courierka.dependencyinjection.repo.TypeViewModel
+import com.ka.courierka.di.repo.TypeViewModel
 import com.ka.courierka.courier.UserFragment
 import com.ka.courierka.helper.isCorrectDestinationNow
 import com.ka.courierka.order.Order
