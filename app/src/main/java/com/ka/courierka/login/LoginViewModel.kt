@@ -9,48 +9,39 @@ import com.google.firebase.auth.FirebaseUser
 
 class LoginViewModel(
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
-):ViewModel() {
+) : ViewModel() {
 
 
     private var error = MutableLiveData<String>()
     private var user = MutableLiveData<FirebaseUser>()
 
+    fun getError(): LiveData<String> {
+        return error
+
+    }
+
+    fun getUser(): LiveData<FirebaseUser> {
 
 
+        auth.addAuthStateListener {
+            FirebaseAuth.AuthStateListener {
 
-
-     fun getError(): LiveData<String>{
-
-             return error
-
-     }
-
-    fun getUser():LiveData<FirebaseUser>{
-
-
-        auth.addAuthStateListener {FirebaseAuth.AuthStateListener{
-
-            if (it.currentUser!= null){
-                Log.d("iduid1","${it.currentUser!!.uid}  " )
-                user.value = it.currentUser
+                if (it.currentUser != null) {
+                    Log.d("iduid1", "${it.currentUser!!.uid}  ")
+                    user.value = it.currentUser
+                }
             }
-        }
-
-
         }
         return user
     }
 
 
+    fun login(email: String, password: String) {
 
-
-
-    fun login(email:String,password:String){
-
-        auth.signInWithEmailAndPassword(email,password).addOnSuccessListener {
+        auth.signInWithEmailAndPassword(email, password).addOnSuccessListener {
 //            user.setValue(it.user)
             user.value = it.user
-            Log.d("iduid1","${it.user?.uid} ")
+            Log.d("iduid1", "${it.user?.uid} ")
         }.addOnFailureListener {
 //            error.setValue(it.message)
             error.value = it.message

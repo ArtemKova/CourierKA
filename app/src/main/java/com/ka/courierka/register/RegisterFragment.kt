@@ -47,13 +47,11 @@ import com.ka.courierka.login.LoginFragment
 
 import com.ka.courierka.order.neworder.NewOrderFragment
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val EMAIL = "email"
 private const val PASS = "pass"
 
 class RegisterFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+
     private var requiredDestinationId = 0
     private lateinit var viewModel: RegistrationViewModel
     private var email1 = ""
@@ -71,7 +69,6 @@ class RegisterFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-//        val view = inflater.inflate(R.layout.fragment_register, container, false)
         requiredDestinationId = R.id.registerFragment
         val view = ComposeView(requireContext()).apply {
             setContent {
@@ -110,7 +107,8 @@ class RegisterFragment : Fragment() {
                         .padding(10.dp)
                         .fillMaxWidth()
                     )
-                    TextField(value = name.value,
+                    TextField(
+                        value = name.value,
                         onValueChange = { nam ->
                             name.value = nam
 //                        pass = name.value
@@ -120,7 +118,8 @@ class RegisterFragment : Fragment() {
                             .padding(10.dp)
                             .fillMaxWidth()
                     )
-                    TextField(value = lastName.value,
+                    TextField(
+                        value = lastName.value,
                         onValueChange = { pas ->
                             lastName.value = pas
 //                        pass = lastName.value
@@ -130,7 +129,8 @@ class RegisterFragment : Fragment() {
                             .padding(10.dp)
                             .fillMaxWidth()
                     )
-                    TextField(value = age.value.toString(),
+                    TextField(
+                        value = age.value.toString(),
                         onValueChange = { pas ->
                             age.value = pas.toInt()
 //                        pass = age.value
@@ -141,7 +141,8 @@ class RegisterFragment : Fragment() {
                             .fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
-                    TextField(value = city.value,
+                    TextField(
+                        value = city.value,
                         onValueChange = { pas ->
                             city.value = pas
                             pass = city.value
@@ -151,8 +152,6 @@ class RegisterFragment : Fragment() {
                             .padding(10.dp)
                             .fillMaxWidth()
                     )
-
-
                     Box {
                         IconButton(onClick = { expanded.value = true }) {
                             Icon(Icons.Default.MoreVert, contentDescription = "Показать меню")
@@ -203,19 +202,7 @@ class RegisterFragment : Fragment() {
         observeViewModel()
     }
 
-
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-
-
-    }
-
-
-
-    private fun goToLogin( email:String, password: String) {
+    private fun goToLogin(email: String, password: String) {
         val currentDestination = findNavController().currentDestination?.id
         if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
             val args = LoginFragment.newInstance(
@@ -244,24 +231,8 @@ class RegisterFragment : Fragment() {
         }
         viewModel.getUser().observe(viewLifecycleOwner) {
             if (it != null) {
-                goToLogin(email1,pass)
+                goToLogin(email1, pass)
             }
         }
     }
-
-    @Composable
-    fun Spinner() {
-
-    }
-//    companion object {
-//
-//        @JvmStatic
-//        fun newInstance(email: String, pass: String) =
-//            RegisterFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString(EMAIL, email)
-//                    putString(PASS, pass)
-//                }
-//            }
-//    }
 }

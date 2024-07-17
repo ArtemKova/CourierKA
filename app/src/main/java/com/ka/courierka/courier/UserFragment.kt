@@ -46,7 +46,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.ka.courierka.R
-import com.ka.courierka.di.repo.TypeViewModel
 import com.ka.courierka.helper.isCorrectDestinationNow
 import com.ka.courierka.order.neworder.NewOrderFragment
 import com.example.data.data.Order
@@ -60,15 +59,11 @@ private const val CUR_ID = "currentUserId"
 
 @AndroidEntryPoint
 class UserFragment : Fragment() {
-    //    override val scope: Scope by fragmentScope()
     private val viewModel1: TypeViewModel by viewModels()
     lateinit var viewModel: UsersViewModel
 
-    // TODO: Rename and change types of parameters
     private var requiredDestinationId = 0
     private var typeOrders = arrayListOf<String>()
-    private lateinit var recyclerViewUser: RecyclerView
-    private lateinit var usersAdapter: UsersAdapter
     private lateinit var currentUserId: String
 
     private var deliv: Boolean = false
@@ -225,21 +220,7 @@ class UserFragment : Fragment() {
             if (it.isEmpty()) {
                 viewModel.logout()
             }
-
-
-//            if (it[0].courier){
-//                linearLayout.visibility = GONE
-//            }
-//            else {
-//                linearLayout.visibility = VISIBLE
-//            }
         }
-//        if (viewModel.getCourierK()){
-//            linearLayout.visibility = GONE
-//        }
-//        else {
-//            linearLayout.visibility = VISIBLE
-//        }
     }
 
     private fun goToLogin() {
@@ -274,27 +255,15 @@ class UserFragment : Fragment() {
     private fun goToStatusUser() {
         val currentDestination = findNavController().currentDestination?.id
         if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
-            val args = StatusUser.newInstance(currentUserId, "")
+            val args = StatusUser.newInstance(currentUserId)
             findNavController().navigate(R.id.action_userFragment_to_statusUser, args.arguments)
         }
     }
-//    private fun goToChat(user:User){
-//        val currentDestination = findNavController().currentDestination?.id
-//        if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
-//            val args = ChatFragment.newInstance(currentUserId,user.id)
-//            findNavController().navigate(R.id.action_userFragment_to_chatFragment, args.arguments)
-//        }
-//
-//
-//    }
-
-
     @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         MenuInflater(activity).inflate(R.menu.main_menu, menu)
     }
-
     @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.item_logout) {
@@ -302,25 +271,17 @@ class UserFragment : Fragment() {
         }
         if (item.itemId == R.id.item_status_curier) {
             goToStatusUser()
-//
         }
-
         return super.onOptionsItemSelected(item)
-
     }
-
     override fun onResume() {
         super.onResume()
         viewModel.setUserOnLine(true)
-
     }
-
     override fun onPause() {
         super.onPause()
         viewModel.setUserOnLine(false)
-
     }
-
     private fun observeLiveData() {
         viewModel1.modelItem.observe(viewLifecycleOwner) { item ->
             item?.let { items ->
@@ -330,8 +291,6 @@ class UserFragment : Fragment() {
                     typeOrders.add(item.typeorder)
                     println("type: ${item.typeorder}")
                     Log.d("itemCoin", "type: ${item.typeorder}")
-
-
                 }
                 Log.d("itemCoin", "All: ${typeOrders[0]}")
                 Log.d("itemCoin", "All: ${typeOrders[1]}")

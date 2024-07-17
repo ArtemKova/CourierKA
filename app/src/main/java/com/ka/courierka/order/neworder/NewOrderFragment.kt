@@ -16,7 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.ka.courierka.R
-import com.ka.courierka.di.repo.TypeViewModel
+import com.ka.courierka.courier.TypeViewModel
 import com.ka.courierka.courier.UserFragment
 import com.ka.courierka.helper.isCorrectDestinationNow
 import com.ka.courierka.order.Order
@@ -25,12 +25,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.ArrayList
 
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ID = "id"
+private const val LIST = "list"
 
 @AndroidEntryPoint
 class NewOrderFragment : Fragment() {
-//    override val scope: Scope by fragmentScope()
+
     private val viewModel1: TypeViewModel by viewModels()
 
     // TODO: Rename and change types of parameters
@@ -54,8 +54,8 @@ class NewOrderFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getStringArrayList(ARG_PARAM2)!!
+            param1 = it.getString(ID)
+            param2 = it.getStringArrayList(LIST)!!
             idCustomer = param1.toString()
         }
     }
@@ -102,12 +102,6 @@ class NewOrderFragment : Fragment() {
         array_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerTypeOrder.adapter = array_adapter
         spinnerTypeOrder.setSelection(1)
-//        val adapter: ArrayAdapter<*> = ArrayAdapter.createFromResource(
-//            this,typeOrders,
-//            android.R.layout.simple_spinner_item
-//        )
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
 
     }
 
@@ -178,11 +172,11 @@ class NewOrderFragment : Fragment() {
     companion object {
 
         @JvmStatic
-        fun newInstance(param1: String, param2: ArrayList<String>) =
+        fun newInstance(id: String, list: ArrayList<String>) =
             NewOrderFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putStringArrayList(ARG_PARAM2, param2)
+                    putString(ID, id)
+                    putStringArrayList(LIST, list)
                 }
             }
     }

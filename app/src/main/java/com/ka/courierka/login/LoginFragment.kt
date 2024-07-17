@@ -63,8 +63,6 @@ class LoginFragment : Fragment() {
             setContent {
                 val email = remember { mutableStateOf("") }
                 val password = remember { mutableStateOf("") }
-//        val view = inflater.inflate(R.layout.fragment_login, container, false).apply {
-//            findViewById<ComposeView>(R.id.composeView).setContent {
                 Column(
                     modifier = Modifier
                         .fillMaxSize(),

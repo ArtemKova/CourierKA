@@ -38,10 +38,5 @@ class OrderListRepositoryImpl(application: Application): OrderListRepository {
     suspend fun clear(){
         orderListDao.delete()
     }
-//        MediatorLiveData<List<Order>>().apply {
-//        addSource(orderListDao.getOrderList()){
-//            value = mapper.mapListDBOrderToListOrder(it)
-
-
 
 }

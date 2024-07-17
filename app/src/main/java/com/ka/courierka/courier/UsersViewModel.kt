@@ -48,10 +48,7 @@ class UsersViewModel(
     private val editOrderItemUseCase = EditOrderItemUseCase(repository)
     private val getOrderItemUseCase = GetOrderItemUseCase(repository)
 
-init {
-//    orders = repository.orderList as MutableLiveData<MutableList<Order>>
-}
-//constructor(auth: FirebaseAuth, user: FirebaseUser, application: Application) : this(application)
+
 
     fun getUser(): LiveData<FirebaseUser> {
         auth.addAuthStateListener {
@@ -188,13 +185,6 @@ init {
                         }
                     }
                 }
-//                orders.value = users1
-
-//                orders = MediatorLiveData<List<Order>>().apply {
-//                    addSource(orderListDao.getOrderList()){
-//
-//                    }
-//                }
             }
 
             override fun onCancelled(error: DatabaseError) {

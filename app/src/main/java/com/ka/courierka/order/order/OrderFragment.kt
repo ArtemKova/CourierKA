@@ -63,18 +63,8 @@ class OrderFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         requiredDestinationId = R.id.orderFragment
-        // Inflate the layout for this fragment
           var view = ComposeView(requireContext()).apply {
               setContent {
-//                  val name_customer = remember { mutableStateOf("") }
-//                  val order_receipt_adress = remember { mutableStateOf("") }
-//                  val delivery_address = remember { mutableStateOf("") }
-//                  val phone_number = remember { mutableStateOf("") }
-//                  val delivery_time = remember { mutableStateOf("") }
-//                  val payment = remember { mutableStateOf("") }
-//                  val city = remember { mutableStateOf("") }
-//                  val order_type = remember { mutableStateOf("") }
-
                   Column(
                       modifier = Modifier
                           .fillMaxSize(),
@@ -148,30 +138,6 @@ class OrderFragment : Fragment() {
           }
         return view
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        viewModel = ViewModelProvider(this)[NewOrderViewModel::class.java]
-        initViews(view)
-    }
-
-    private fun initViews(view: View) {
-
-
-//        param9 = it.getString(ARG_PARAM9)       //courier
-
-//        if (param9 != "") {
-//            buttonGetDelivery.isEnabled = false
-//            buttonGetDelivery.text = getString(R.string.taken_order)
-//        } else {
-//            buttonGetDelivery.isEnabled = true
-//            buttonGetDelivery.text = getString(R.string.get_order)
-//        }
-
-
-
-    }
-
     private fun goToUser(id: String) {
         val currentDestination = findNavController().currentDestination?.id
         if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
@@ -180,13 +146,6 @@ class OrderFragment : Fragment() {
                 R.id.action_orderFragment_to_userFragment,
                 args.arguments
             )
-        }
-
-    }
-
-    fun observeViewModel() {
-        viewModel.getOrders(id).observe(viewLifecycleOwner) {
-
         }
 
     }

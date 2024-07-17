@@ -1,8 +1,10 @@
-package com.ka.courierka.di.repo
+package com.ka.courierka.courier
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ka.courierka.di.TypeOrder
+import com.ka.courierka.di.repo.RepositoryImpl
+import com.ka.courierka.di.repo.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

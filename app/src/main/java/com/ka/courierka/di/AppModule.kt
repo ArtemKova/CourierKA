@@ -11,16 +11,7 @@ import javax.inject.Singleton
 class AppModule {
     @Singleton
     @Provides
-
     fun provideTypeOrderService(): Apifortype {
         return Apifortype.create()
     }
 }
-//        single<Repository> {
-//            RepositoryImpl(get())
-//        }
-//
-//        viewModel {
-//            TypeViewModel(get())
-//        }
-//    }
