@@ -25,8 +25,10 @@
     <string name="reset_link">The reset link has successfully sent</string>
     <string name="type_your_message">Type your message</string>
     <string name="new_order">New order</string>
+    <string name="old_order">Old order</string>
     <string name="order">Order</string>
     <string name="name_customer">Name customer</string>
+    <string name="customer">Customer</string>
     <string name="delivery_address">Delivery address</string>
     <string name="phone">Phone number</string>
     <string name="time_delivery">Delivery time</string>
@@ -36,8 +38,11 @@
     <string name="get_order">Get order</string>
     <string name="taken_order">The order has been taken</string>
     <string name="order_receipt_address">Order receipt address</string>
+    <string name="order1">1</string>
+    <string name="order2">Electronics</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="courierka">CourierKA</string>
     <string-array name="typeCourier">
         <item>Customer</item>
         <item>Courier</item>

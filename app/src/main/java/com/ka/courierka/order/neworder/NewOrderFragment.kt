@@ -12,32 +12,26 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.ka.courierka.R
-import com.ka.courierka.coin.repo.TypeViewModel
+import com.ka.courierka.courier.TypeViewModel
 import com.ka.courierka.courier.UserFragment
 import com.ka.courierka.helper.isCorrectDestinationNow
 import com.ka.courierka.order.Order
-import org.koin.android.scope.AndroidScopeComponent
-import org.koin.androidx.scope.fragmentScope
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.scope.Scope
+import dagger.hilt.android.AndroidEntryPoint
+
 import java.util.ArrayList
 
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ID = "id"
+private const val LIST = "list"
 
+@AndroidEntryPoint
+class NewOrderFragment : Fragment() {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [NewOrderFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class NewOrderFragment : Fragment(), AndroidScopeComponent {
-    override val scope: Scope by fragmentScope()
-    private val viewModel1 by viewModel<TypeViewModel>()
+    private val viewModel1: TypeViewModel by viewModels()
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -60,8 +54,8 @@ class NewOrderFragment : Fragment(), AndroidScopeComponent {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getStringArrayList(ARG_PARAM2)!!
+            param1 = it.getString(ID)
+            param2 = it.getStringArrayList(LIST)!!
             idCustomer = param1.toString()
         }
     }
@@ -108,12 +102,6 @@ class NewOrderFragment : Fragment(), AndroidScopeComponent {
         array_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerTypeOrder.adapter = array_adapter
         spinnerTypeOrder.setSelection(1)
-//        val adapter: ArrayAdapter<*> = ArrayAdapter.createFromResource(
-//            this,typeOrders,
-//            android.R.layout.simple_spinner_item
-//        )
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
 
     }
 
@@ -121,8 +109,10 @@ class NewOrderFragment : Fragment(), AndroidScopeComponent {
         super.onActivityCreated(savedInstanceState)
 
         var selected = spinnerTypeOrder.selectedItem
-        if (selected.equals("other")) {
-            editTypeOrder.visibility = View.VISIBLE
+        if (selected != null) {
+            if( selected.equals("other")) {
+                editTypeOrder.visibility = View.VISIBLE
+            }
         }
 
         buttonDelivery.setOnClickListener(object : View.OnClickListener {
@@ -169,7 +159,7 @@ class NewOrderFragment : Fragment(), AndroidScopeComponent {
     private fun goToUser(id: String) {
         val currentDestination = findNavController().currentDestination?.id
         if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
-            val args = UserFragment.newInstance(id, "")
+            val args = UserFragment.newInstance(id)
             findNavController().navigate(
                 R.id.action_newOrderFragment_to_userFragment,
                 args.arguments
@@ -180,21 +170,13 @@ class NewOrderFragment : Fragment(), AndroidScopeComponent {
 
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment NewOrderFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
-        fun newInstance(param1: String, param2: ArrayList<String>) =
+        fun newInstance(id: String, list: ArrayList<String>) =
             NewOrderFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putStringArrayList(ARG_PARAM2, param2)
+                    putString(ID, id)
+                    putStringArrayList(LIST, list)
                 }
             }
     }

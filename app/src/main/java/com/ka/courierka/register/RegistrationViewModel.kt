@@ -18,8 +18,6 @@ class RegistrationViewModel: ViewModel() {
     private  var user = MutableLiveData<FirebaseUser>()
 
 
-
-
     fun getError(): LiveData<String> {
         return error
     }
@@ -62,6 +60,5 @@ class RegistrationViewModel: ViewModel() {
            error.value=it.message
        }
     }
-
 
 }

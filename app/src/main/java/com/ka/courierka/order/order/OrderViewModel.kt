@@ -15,15 +15,15 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.ka.courierka.courier.User
-import com.ka.courierka.data.AppDataBase
-import com.ka.courierka.data.OrderListMapper
-import com.ka.courierka.data.OrderListRepositoryImpl
-import com.ka.courierka.domain.AddOrderItemUseCase
-import com.ka.courierka.domain.DeleteOrderItemUseCase
-import com.ka.courierka.domain.EditOrderItemUseCase
-import com.ka.courierka.domain.GetOrderItemUseCase
-import com.ka.courierka.domain.GetOrderListUseCase
-import com.ka.courierka.order.Order
+import com.example.data.data.AppDataBase
+import com.example.data.data.OrderListMapper
+import com.example.data.data.OrderListRepositoryImpl
+import com.example.data.domain.AddOrderItemUseCase
+import com.example.data.domain.DeleteOrderItemUseCase
+import com.example.data.domain.EditOrderItemUseCase
+import com.example.data.domain.GetOrderItemUseCase
+import com.example.data.domain.GetOrderListUseCase
+import com.example.data.data.Order
 import kotlinx.coroutines.launch
 
 class OrderViewModel(application: Application) : AndroidViewModel(application) {

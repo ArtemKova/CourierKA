@@ -1,109 +1,199 @@
 package com.ka.courierka.courier
 
+import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import android.widget.Button
-import android.widget.LinearLayout
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.ka.courierka.R
-import com.ka.courierka.coin.repo.TypeViewModel
 import com.ka.courierka.helper.isCorrectDestinationNow
 import com.ka.courierka.order.neworder.NewOrderFragment
-import com.ka.courierka.order.Order
+import com.example.data.data.Order
 import com.ka.courierka.order.order.OrderFragment
-import org.koin.android.scope.AndroidScopeComponent
-import org.koin.androidx.scope.fragmentScope
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.scope.Scope
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val CUR_ID = "currentUserId"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [UserFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class UserFragment : Fragment(), AndroidScopeComponent {
-    override val scope: Scope by fragmentScope()
-    private val viewModel1 by viewModel<TypeViewModel>()
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+@AndroidEntryPoint
+class UserFragment : Fragment() {
+    private val viewModel1: TypeViewModel by viewModels()
+    lateinit var viewModel: UsersViewModel
+
     private var requiredDestinationId = 0
     private var typeOrders = arrayListOf<String>()
-    private lateinit var recyclerViewUser: RecyclerView
-    private lateinit var linearLayout: LinearLayout
-    private lateinit var neworder: Button
-    private lateinit var oldorders: Button
-    private lateinit var usersAdapter: UsersAdapter
     private lateinit var currentUserId: String
-    private lateinit var viewModel: UsersViewModel
-    private  var deliv:Boolean = false
+
+    private var deliv: Boolean = false
+    var orders = mutableListOf<Order>()
+    var orders1 = mutableListOf<Order>()
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-            currentUserId = param1.toString()
+            currentUserId = it.getString(CUR_ID).toString()
         }
         viewModel = ViewModelProvider(this)[UsersViewModel::class.java]
+        viewModel.setUserOnLine(true)
+
         viewModel1.doNetworkCall()
 
-        setHasOptionsMenu(true);
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view = inflater.inflate(R.layout.fragment_user, container, false)
+
         requiredDestinationId = R.id.userFragment
-        linearLayout = view.findViewById(R.id.linearLayout)
-        neworder = view.findViewById(R.id.neworder)
-        oldorders = view.findViewById(R.id.oldorder)
-        recyclerViewUser = view.findViewById(R.id.recyclerViewUsers)
-        usersAdapter = UsersAdapter()
-        recyclerViewUser.adapter = usersAdapter
-        if (oldorders.text.equals("Old orders")){
-            deliv = false
-        } else {
-            deliv = true
-        }
         observeLiveData()
-        // Inflate the layout for this fragment
+
+        var view = ComposeView(requireContext()).apply {
+            setContent {
+                observeViewModel()
+                val _sharedFlow = MutableSharedFlow<MutableList<Order>>()
+                val sharedFlow = _sharedFlow.asSharedFlow()
+                val coroutineScope = rememberCoroutineScope()
+                LaunchedEffect(Unit) {
+                    coroutineScope.launch() {
+                        for (i in 1..5) {
+                            viewModel.getOrders().value?.let { _sharedFlow.emit(it) }
+                        }
+
+                    }
+                }
+
+                var oo = stringResource(id = R.string.old_order)
+                var oldorder = remember { mutableStateOf(oo) }
+                Log.d("itemCoin1", "Order: ${orders}")
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Button(
+                            onClick = { goToNewOrder() },
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier.padding(10.dp)
+                        ) { Text(stringResource(id = R.string.new_order), fontSize = 28.sp) }
+                        Button(
+                            onClick = {
+
+                                if (oldorder.value.equals("Old order")) {
+                                    oldorder.value = "Orders"
+                                    deliv = false
+                                } else {
+                                    oldorder.value = "Old order"
+                                    deliv = true
+                                }
+
+                            },
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier.padding(10.dp)
+                        ) { Text(oldorder.value, fontSize = 28.sp) }
+                    }
+                    val owner = LocalViewModelStoreOwner.current
+                    owner?.let {
+                    val viewModel1: UsersViewModel = viewModel(
+                        it,
+                        "UserViewModel",
+                       OrderViewModelFactory(LocalContext.current.applicationContext as Application)
+                    )
+                    OrdersList(viewModel1)}
+//
+                }
+            }
+        }
+
+
         return view
-
-
     }
 
-    fun initViews() {
+    @Composable
+    fun OrdersList(vm: UsersViewModel = viewModel()) {
+        val orderes by vm.getOrders().observeAsState(listOf())
 
-        neworder.setOnClickListener() {
-            goToNewOrder()
-        }
-        oldorders.setOnClickListener {
-            if (oldorders.text.equals("Old orders")){
-                oldorders.text = "Orders"
-                deliv = true
-            } else {
-                oldorders.text = "Old orders"
-                deliv = false
+        LazyColumn {
+            items(orderes) { order ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.LightGray)
+                        .border(width = 2.dp, color = Color.White)
+                        .height(50.dp)
+                        .clickable(onClick = { goToOrder(order) }),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+
+                    ) {
+                    Text(
+                        text = String.format(
+                            "%s %s, %s",
+                            order.name,
+                            order.phone,
+                            order.time
+                        ),
+                        fontSize=18.sp
+                    )
+                    Box(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .background(color = Color.Red)
+                    )
+                }
             }
         }
     }
-
+    @Composable
     fun observeViewModel() {
         viewModel.getUser().observe(viewLifecycleOwner) {
             if (it == null) {
@@ -111,39 +201,26 @@ class UserFragment : Fragment(), AndroidScopeComponent {
             }
         }
         viewModel.getOrders().observe(viewLifecycleOwner) {
-            var orders = mutableListOf<Order>()
-            for (order in it){
-                if (deliv == order.delivered) {
-                    orders.add(order)
-                }
-            }
-            usersAdapter.setUsers(orders)
-            usersAdapter.onUserClickListener = object : UsersAdapter.OnUserClickListener {
-                override fun onUserClick(order: Order) {
-                    Log.d("Look_id4","${order.id}")
-                    goToOrder(order)
-                }
-            }
+            orders = it
+
+//            for (order in it) {
+//                if (deliv == order.delivered) {
+//                    orders.add(order)
+//                }
+//            }
+//            usersAdapter.setUsers(orders)
+//            usersAdapter.onUserClickListener = object : UsersAdapter.OnUserClickListener {
+//                override fun onUserClick(order: Order) {
+//                    Log.d("Look_id4","${order.id}")
+//                    goToOrder(order)
+//                }
+//            }
         }
-        viewModel.getCourier().observe(viewLifecycleOwner){
-            if (it.isEmpty()){
+        viewModel.getCourier().observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
                 viewModel.logout()
             }
-
-
-            if (it[0].courier){
-                linearLayout.visibility = GONE
-            }
-            else {
-                linearLayout.visibility = VISIBLE
-            }
         }
-//        if (viewModel.getCourierK()){
-//            linearLayout.visibility = GONE
-//        }
-//        else {
-//            linearLayout.visibility = VISIBLE
-//        }
     }
 
     private fun goToLogin() {
@@ -156,29 +233,21 @@ class UserFragment : Fragment(), AndroidScopeComponent {
     private fun goToNewOrder() {
         val currentDestination = findNavController().currentDestination?.id
         if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
-            val args = NewOrderFragment.newInstance(currentUserId,typeOrders )
-            findNavController().navigate(R.id.action_userFragment_to_newOrderFragment, args.arguments)
+            val args = NewOrderFragment.newInstance(currentUserId, typeOrders)
+            findNavController().navigate(
+                R.id.action_userFragment_to_newOrderFragment,
+                args.arguments
+            )
         }
     }
-    private fun goToOrder(order:Order){
+
+    private fun goToOrder(order: Order) {
         val currentDestination = findNavController().currentDestination?.id
         if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
             val args = OrderFragment.newInstance(
-                 order.id,
-                 order.name,
-                 order.phone,
-                 order.adress,
-                 order.recadress,
-                 order.customer_id,
-                 order.time,
-                 order.isPay,
-                 order.courier,
-                 order.city,
-                 order.typeOrder,
-                 order.delivered,
+                order,
                 currentUserId
-
-                )
+            )
             findNavController().navigate(R.id.action_userFragment_to_orderFragment, args.arguments)
         }
     }
@@ -186,35 +255,15 @@ class UserFragment : Fragment(), AndroidScopeComponent {
     private fun goToStatusUser() {
         val currentDestination = findNavController().currentDestination?.id
         if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
-            val args = StatusUser.newInstance(currentUserId,"")
+            val args = StatusUser.newInstance(currentUserId)
             findNavController().navigate(R.id.action_userFragment_to_statusUser, args.arguments)
         }
     }
-//    private fun goToChat(user:User){
-//        val currentDestination = findNavController().currentDestination?.id
-//        if (isCorrectDestinationNow(currentDestination, requiredDestinationId)) {
-//            val args = ChatFragment.newInstance(currentUserId,user.id)
-//            findNavController().navigate(R.id.action_userFragment_to_chatFragment, args.arguments)
-//        }
-//
-//
-//    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        initViews()
-        observeViewModel()
-
-
-    }
-
     @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         MenuInflater(activity).inflate(R.menu.main_menu, menu)
     }
-
     @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.item_logout) {
@@ -222,66 +271,47 @@ class UserFragment : Fragment(), AndroidScopeComponent {
         }
         if (item.itemId == R.id.item_status_curier) {
             goToStatusUser()
-//
         }
-
         return super.onOptionsItemSelected(item)
-
     }
-
     override fun onResume() {
         super.onResume()
         viewModel.setUserOnLine(true)
-
     }
-
     override fun onPause() {
         super.onPause()
-
         viewModel.setUserOnLine(false)
-
     }
-    private fun observeLiveData(){
+    private fun observeLiveData() {
         viewModel1.modelItem.observe(viewLifecycleOwner) { item ->
-            item?.let {items->
-                items.data?.forEach {item->
+            item?.let { items ->
+                items.data?.forEach { item ->
                     println("id: ${item.id}")
-                    Log.d("itemCoin","id: ${item.id}")
+                    Log.d("itemCoin", "id: ${item.id}")
                     typeOrders.add(item.typeorder)
                     println("type: ${item.typeorder}")
-                    Log.d("itemCoin","type: ${item.typeorder}")
-
-
-
+                    Log.d("itemCoin", "type: ${item.typeorder}")
                 }
-                Log.d("itemCoin","All: ${typeOrders[0]}")
-                Log.d("itemCoin","All: ${typeOrders[1]}")
-                Log.d("itemCoin","All: ${typeOrders[2]}")
-                Log.d("itemCoin","All: ${typeOrders[3]}")
-                Log.d("itemCoin","All: ${typeOrders[4]}")
-                Log.d("itemCoin","All: ${typeOrders[5]}")
-                Log.d("itemCoin","All: ${typeOrders[6]}")
+                Log.d("itemCoin", "All: ${typeOrders[0]}")
+                Log.d("itemCoin", "All: ${typeOrders[1]}")
+                Log.d("itemCoin", "All: ${typeOrders[2]}")
+                Log.d("itemCoin", "All: ${typeOrders[3]}")
+                Log.d("itemCoin", "All: ${typeOrders[4]}")
+                Log.d("itemCoin", "All: ${typeOrders[5]}")
+                Log.d("itemCoin", "All: ${typeOrders[6]}")
             }
         }
 
 
     }
+
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment UserFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(currentUserId: String) =
             UserFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putString(CUR_ID, currentUserId)
                 }
             }
     }
