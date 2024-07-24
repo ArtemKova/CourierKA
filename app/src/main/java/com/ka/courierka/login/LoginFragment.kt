@@ -79,11 +79,11 @@ class LoginFragment : Fragment() {
                     TextField(value = email.value, onValueChange = { email2 ->
                         email.value = email2
                         email1 = email.value
-                    }, placeholder = { Text("Email") }, modifier = Modifier.padding(10.dp).fillMaxWidth())
+                    }, placeholder = { Text("Email",fontSize = 20.sp) }, modifier = Modifier.padding(10.dp).fillMaxWidth())
                     TextField(value = password.value, onValueChange = { pas ->
                         password.value = pas
                         pass = password.value
-                    }, placeholder = { Text("Password") }, modifier = Modifier.padding(10.dp).fillMaxWidth())
+                    }, placeholder = { Text("Password",fontSize = 20.sp) }, modifier = Modifier.padding(10.dp).fillMaxWidth())
                     Button(
                         onClick = { viewModel.login(email1, pass) },
                         shape = RoundedCornerShape(10.dp),
@@ -95,12 +95,14 @@ class LoginFragment : Fragment() {
                     ) {
                         Text(
                             text = stringResource(id = R.string.forgot_password),
+                            fontSize = 20.sp,
                             modifier = Modifier
                                 .clickable(onClick = { goToForgotPass() })
                                 .padding(10.dp)
                         )
                         Text(
                             text = stringResource(id = R.string.register),
+                            fontSize = 20.sp,
                             modifier = Modifier
                                 .clickable(onClick = { goToRegister() })
                                 .padding(10.dp)
