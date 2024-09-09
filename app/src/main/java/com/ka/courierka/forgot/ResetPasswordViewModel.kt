@@ -26,4 +26,5 @@ class ResetPasswordViewModel : ViewModel() {
     fun isSuccess(): LiveData<Boolean> {
         return success
     }
+
 }

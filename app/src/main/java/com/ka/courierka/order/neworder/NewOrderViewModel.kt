@@ -14,15 +14,11 @@ class NewOrderViewModel : ViewModel() {
     private var auth = FirebaseAuth.getInstance()
     val database = Firebase.database
     val ordersRefernce = database.getReference("Orders")
-
     private var error = MutableLiveData<String>()
     private var user = MutableLiveData<FirebaseUser>()
-
-
     fun getError(): LiveData<String> {
         return error
     }
-
     fun getUser(): LiveData<FirebaseUser> {
         auth.addAuthStateListener {
             if (it.currentUser != null) {
@@ -40,8 +36,6 @@ class NewOrderViewModel : ViewModel() {
             .setValue(order)
             .addOnSuccessListener(object : OnSuccessListener<Void>{
                 override fun onSuccess(p0: Void?) {
-
-//                    TODO("Not yet implemented")
                 }
 
             })

@@ -19,7 +19,7 @@ interface OrderListDao {
     suspend fun deleteOrderItem(orderId:String)
 
     @Query("SELECT * FROM order_items WHERE id=:orderId LIMIT 1")
-    suspend fun getOrderItem(orderId:String):OrderItemDBModel
+     fun getOrderItem(orderId:String):Order
 
     @Query("DELETE FROM order_items")
     suspend fun delete()
