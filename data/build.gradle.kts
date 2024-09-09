@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    id("kotlin-kapt")
+    id("com.google.gms.google-services")
 //    id ("com.android.library")
 }
 
@@ -16,7 +18,7 @@ android {
     defaultConfig {
 
         minSdk = 27
-      
+
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -80,4 +82,10 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.common)
     ksp(libs.androidx.room.compiler)
+//dagger-hilt
+    implementation(libs.dagger)
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.common)
+    annotationProcessor(libs.dagger.compiler)
+    ksp(libs.hilt.android.compiler)
 }

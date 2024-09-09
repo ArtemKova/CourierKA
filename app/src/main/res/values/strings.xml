@@ -40,6 +40,8 @@
     <string name="order_receipt_address">Order receipt address</string>
     <string name="order1">1</string>
     <string name="order2">Electronics</string>
+    <string name="users_settigs">User\'\s settings</string>
+    <string name="select_an_order">Select an order</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="courierka">CourierKA</string>

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 
 class OrderViewModelFactory (val application: Application) :
     ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return UsersViewModel(application) as T
-    }
+//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//        return UsersViewModel(application) as T
+//    }
 }
