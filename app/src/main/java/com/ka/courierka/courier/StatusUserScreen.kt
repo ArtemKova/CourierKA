@@ -90,7 +90,7 @@ internal fun StatusUserScreen(
             TextField(
                 value = city.value, onValueChange = { city2 ->
                     city.value = city2
-                }, placeholder = { Text("${customer?.get(0)?.city?:"-"}") },
+                }, placeholder = { Text("${customer?.get(0)?.city?:"- "}") },
                 modifier = Modifier
                     .padding(padding.dp)
                     .fillMaxWidth()
