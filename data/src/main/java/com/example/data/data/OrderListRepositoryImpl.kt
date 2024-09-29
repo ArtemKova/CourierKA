@@ -15,33 +15,30 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class OrderListRepositoryImpl @Inject constructor(
+open class OrderListRepositoryImpl @Inject constructor(
     private val orderListDao: OrderListDao
-) {
-
+):OrderListRepository {
 
     private val mapper = OrderListMapper()
-     suspend fun addOrderItem(order: Order) {
+     override suspend fun addOrderItem(order: Order) {
         orderListDao.addOrderItem(mapper.mapOrderToDBOrder(order))
     }
 
-     suspend fun deleteOrderItem(order: Order) {
+     override suspend fun deleteOrderItem(order: Order) {
         orderListDao.deleteOrderItem(order.id)
     }
 
-     suspend fun editOrderItem(order: Order) {
+     override suspend fun editOrderItem(order: Order) {
         orderListDao.addOrderItem(mapper.mapOrderToDBOrder(order))
     }
 
-     suspend fun getOrderItem(orderId: String): Order {
+     override suspend fun getOrderItem(orderId: String): Order {
         return orderListDao.getOrderItem(orderId)
     }
-     fun getOrderList(): LiveData<List<Order>> = orderListDao.getOrderList().map {
+     override fun getOrderList(): LiveData<List<Order>> = orderListDao.getOrderList().map {
         mapper.mapListDBOrderToListOrder(it)
     }
 
-    suspend fun clear(){
-        orderListDao.delete()
-    }
+
 
 }

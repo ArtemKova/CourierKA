@@ -19,6 +19,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -27,24 +28,23 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ka.courierka.R
+import com.ka.courierka.courier.User
 import com.ka.courierka.navigation.Routes
 
 @Composable
 internal fun RegScreen(
     navController: NavHostController,
-    viewModel: RegistrationViewModel
+    viewModel: RegistrationViewModel = hiltViewModel()
 ){
 
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-    val name = remember { mutableStateOf("") }
-    val lastName = remember { mutableStateOf("") }
-    val age = remember { mutableStateOf(0) }
-    val city = remember { mutableStateOf("") }
-    val typeCourier = remember { mutableStateOf(false) }
-    var expanded = remember { mutableStateOf(false) }
+    val users = rememberSaveable {
+        mutableStateOf(User("","", "", 0, false, false, "", ""))}
+    val expanded = remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -72,10 +72,9 @@ internal fun RegScreen(
             .fillMaxWidth()
         )
         TextField(
-            value = name.value,
-            onValueChange = { nam ->
-                name.value = nam
-//                        pass = name.value
+            value = users.value.name,
+            onValueChange = { name ->
+                users.value.name = name
             },
             placeholder = { Text(stringResource(id = R.string.name)) },
             modifier = Modifier
@@ -83,10 +82,9 @@ internal fun RegScreen(
                 .fillMaxWidth()
         )
         TextField(
-            value = lastName.value,
-            onValueChange = { pas ->
-                lastName.value = pas
-//                        pass = lastName.value
+            value = users.value.lastName,
+            onValueChange = { changedLastName ->
+                users.value.lastName= changedLastName
             },
             placeholder = { Text(stringResource(id = R.string.last_name)) },
             modifier = Modifier
@@ -94,10 +92,12 @@ internal fun RegScreen(
                 .fillMaxWidth()
         )
         TextField(
-            value = age.value.toString(),
-            onValueChange = { pas ->
-                age.value = pas.toInt()
-//                        pass = age.value
+            value = "${users.value.age}",
+            onValueChange = { changedAge ->
+                if (changedAge == ""){users.value.age = 0}
+                else {
+                    users.value.age = changedAge.toInt()
+                }
             },
             placeholder = { Text(stringResource(id = R.string.age)) },
             modifier = Modifier
@@ -106,9 +106,9 @@ internal fun RegScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
         TextField(
-            value = city.value,
-            onValueChange = { pas ->
-                city.value = pas
+            value = users.value.city,
+            onValueChange = { changedCity ->
+                users.value.city = changedCity
 
             },
             placeholder = { Text(stringResource(id = R.string.city)) },
@@ -125,11 +125,11 @@ internal fun RegScreen(
                 onDismissRequest = { expanded.value = false }
             ) {
                 DropdownMenuItem(
-                    onClick = { typeCourier.value = false },
+                    onClick = { users.value.courier = false },
                     text = { Text(stringResource(id = R.string.courier)) }
                 )
                 DropdownMenuItem(
-                    onClick = { typeCourier.value = true },
+                    onClick = { users.value.courier = true },
                     text = { Text(stringResource(id = R.string.customer)) }
                 )
             }
@@ -139,14 +139,13 @@ internal fun RegScreen(
                 viewModel.signUp(
                     email.value,
                     password.value,
-                    name.value,
-                    lastName.value,
-                    age.value,
-                    city.value,
-                    typeCourier.value
+                    users.value.name,
+                    users.value.lastName,
+                    users.value.age,
+                    users.value.city,
+                    users.value.courier
                 )
                 navController.navigate(route = Routes.Login.routes)
-//                goToLogin(email.value, password.value)
             },
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier

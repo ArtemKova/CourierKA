@@ -25,7 +25,7 @@
     <string name="reset_link">The reset link has successfully sent</string>
     <string name="type_your_message">Type your message</string>
     <string name="new_order">New order</string>
-    <string name="old_order">Old order</string>
+    <string name="oldOrder">Old order</string>
     <string name="order">Order</string>
     <string name="name_customer">Name customer</string>
     <string name="customer">Customer</string>

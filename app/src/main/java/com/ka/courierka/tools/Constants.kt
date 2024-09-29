@@ -2,13 +2,13 @@ package com.ka.courierka.tools
 
 class Constants {
     companion object{
-        val big_font_size = 40
-        val text_field = 20
+        val bigFontSize = 40
+        val textField = 20
         val round = 10
         val padding = 10
-        val button_font_size = 28
-        val border_size = 2
-        val height_in_order = 50
-        val font_size_in_order = 18
+        val buttonFontSize = 28
+        val borderSize = 2
+        val heightInOrder = 50
+        val fontSizeInOrder = 18
     }
 }

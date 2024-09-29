@@ -22,11 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.ka.courierka.tools.Constants.Companion.big_font_size
-import com.ka.courierka.tools.Constants.Companion.button_font_size
 import com.ka.courierka.tools.Constants.Companion.padding
 import com.ka.courierka.tools.Constants.Companion.round
 import com.ka.courierka.R
+import com.ka.courierka.tools.Constants.Companion.bigFontSize
+import com.ka.courierka.tools.Constants.Companion.buttonFontSize
 
 @Composable
 internal fun OrderScreen(
@@ -37,7 +37,6 @@ internal fun OrderScreen(
 ) {
     val orderes = viewModel.getOrders().observeAsState(listOf()).value
     val orders = orderes.filter { it.id.equals(orderId) }
-    orders.let { Log.d("itemCoin1234", "Order: ${it}") }
     if (orders.isNotEmpty()) {
         var order = rememberSaveable {
             mutableStateOf(orders[0])
@@ -49,7 +48,7 @@ internal fun OrderScreen(
         ) {
             Text(
                 text = stringResource(id = R.string.order),
-                fontSize = big_font_size.sp,
+                fontSize = bigFontSize.sp,
                 color = colorResource(id = R.color.purple_500),
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -81,7 +80,7 @@ internal fun OrderScreen(
                 modifier = Modifier
                     .padding(padding.dp)
                     .fillMaxWidth()
-            ) { Text(stringResource(id = R.string.get_order), fontSize = button_font_size.sp) }
+            ) { Text(stringResource(id = R.string.get_order), fontSize = buttonFontSize.sp) }
         }
     }
 

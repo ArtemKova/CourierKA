@@ -22,28 +22,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.ka.courierka.tools.Constants.Companion.big_font_size
-import com.ka.courierka.tools.Constants.Companion.button_font_size
 import com.ka.courierka.tools.Constants.Companion.padding
 import com.ka.courierka.tools.Constants.Companion.round
-import com.ka.courierka.tools.Constants.Companion.text_field
 import com.ka.courierka.R
 import com.ka.courierka.navigation.Routes
+import com.ka.courierka.tools.Constants.Companion.bigFontSize
+import com.ka.courierka.tools.Constants.Companion.buttonFontSize
+import com.ka.courierka.tools.Constants.Companion.textField
 
 @Composable
 internal fun LoginScreen(
     navController: NavHostController,
-    viewModel: LoginViewModel = viewModel()
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
 
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-    val login = viewModel.userid.observeAsState().value
-
-    if(login != null){
-        navController.navigate(Routes.User.routes+"/${login.uid}")
+    val login = viewModel.userId.observeAsState().value
+    if (login != null) {
+        navController.navigate(Routes.User.routes + "/${login.uid}")
     }
     Column(
         modifier = Modifier
@@ -52,7 +51,7 @@ internal fun LoginScreen(
     ) {
         Text(
             text = stringResource(id = R.string.courier),
-            fontSize = big_font_size.sp,
+            fontSize = bigFontSize.sp,
             color = colorResource(id = R.color.purple_500),
             modifier = Modifier
                 .fillMaxWidth(),
@@ -60,37 +59,41 @@ internal fun LoginScreen(
         )
         TextField(value = email.value, onValueChange = { email2 ->
             email.value = email2
-        }, placeholder = { Text("Email",fontSize = text_field.sp) }, modifier = Modifier
+        }, placeholder = { Text("Email", fontSize = textField.sp) }, modifier = Modifier
             .padding(10.dp)
-            .fillMaxWidth())
+            .fillMaxWidth()
+        )
         TextField(value = password.value, onValueChange = { pas ->
             password.value = pas
-        }, placeholder = { Text("Password",fontSize = text_field.sp) }, modifier = Modifier
+        }, placeholder = { Text("Password", fontSize = textField.sp) }, modifier = Modifier
             .padding(10.dp)
-            .fillMaxWidth())
+            .fillMaxWidth()
+        )
         Button(
             onClick = {
                 viewModel.login(email.value, password.value)
-                      },
+            },
             shape = RoundedCornerShape(round.dp),
             modifier = Modifier
                 .padding(padding.dp)
                 .fillMaxWidth()
-        ) { Text(stringResource(id = R.string.login), fontSize = button_font_size.sp) }
+        ) { Text(stringResource(id = R.string.login), fontSize = buttonFontSize.sp) }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = stringResource(id = R.string.forgot_password),
-                fontSize = text_field.sp,
+                fontSize = textField.sp,
                 modifier = Modifier
-                    .clickable(onClick = { navController.navigate(route = Routes.Forgot.routes + "/${email.value}") })
+                    .clickable(onClick = {
+                        if (email.value.isEmpty()){email.value = ""}
+                        navController.navigate(route = Routes.Forgot.routes + "/${email.value}") })
                     .padding(padding.dp)
             )
             Text(
                 text = stringResource(id = R.string.register),
-                fontSize = text_field.sp,
+                fontSize = textField.sp,
                 modifier = Modifier
                     .clickable(onClick = { navController.navigate(route = Routes.Register.routes) })
                     .padding(padding.dp)

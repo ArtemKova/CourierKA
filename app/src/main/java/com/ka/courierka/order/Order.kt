@@ -3,10 +3,10 @@ package com.ka.courierka.order
 import java.io.Serializable
 
 data class Order(
-    var id: String = "",
-    var name: String = "",
+    var id: String,
+    var name: String,
     var phone: String = "",
-    var adress: String = "",
+    var address: String = "",
     var recadress: String = "",
     var customer_id: String = "",
     var time: String = "",

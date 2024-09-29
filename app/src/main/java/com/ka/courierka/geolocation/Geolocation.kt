@@ -12,12 +12,11 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.util.Arrays
 
-const val REQUEST_CODE_ASK_PERMISSIONS = 1
-class Geolocation(context: Context) {
+private const val REQUEST_CODE_ASK_PERMISSIONS = 1
+class Geolocation(val context: Context) {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val REQUIRED_SDK_PERMISSIONS = arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)
-    val context = context
-    fun geo(){
+    fun geo() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
         if (ActivityCompat.checkSelfPermission(
                 context,
@@ -40,7 +39,11 @@ class Geolocation(context: Context) {
             if (missingPermissions.isNotEmpty()) {
                 val permission = missingPermissions
                     .toTypedArray()
-                ActivityCompat.requestPermissions(context as Activity, permission, REQUEST_CODE_ASK_PERMISSIONS)
+                ActivityCompat.requestPermissions(
+                    context as Activity,
+                    permission,
+                    REQUEST_CODE_ASK_PERMISSIONS
+                )
             } else {
                 val grantResults = IntArray(REQUIRED_SDK_PERMISSIONS.size)
                 Arrays.fill(grantResults, PackageManager.PERMISSION_GRANTED)

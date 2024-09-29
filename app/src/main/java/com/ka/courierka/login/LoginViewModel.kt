@@ -12,7 +12,7 @@ class LoginViewModel(
 ) : ViewModel() {
     private var error = MutableLiveData<String>()
     private var user = MutableLiveData<FirebaseUser>()
-    var userid: LiveData<FirebaseUser> = user
+    var userId: LiveData<FirebaseUser> = user
     fun getError(): LiveData<String> {
         return error
     }

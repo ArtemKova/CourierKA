@@ -1,10 +1,10 @@
 package com.example.data.domain
 
 import com.example.data.data.Order
-import com.example.data.data.OrderListRepositoryImpl
+import javax.inject.Inject
 
 
-class GetOrderItemUseCase (private val orderListRepository: OrderListRepositoryImpl){
+class GetOrderItemUseCase @Inject constructor(private val orderListRepository: OrderListRepository){
      suspend fun getOrderItem(orderId:String):Order{
          return orderListRepository.getOrderItem(orderId)
     }

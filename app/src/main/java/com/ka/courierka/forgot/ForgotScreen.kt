@@ -18,27 +18,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.ka.courierka.tools.Constants.Companion.big_font_size
-import com.ka.courierka.tools.Constants.Companion.button_font_size
 import com.ka.courierka.tools.Constants.Companion.padding
 import com.ka.courierka.tools.Constants.Companion.round
 import com.ka.courierka.R
 import com.ka.courierka.navigation.Routes
+import com.ka.courierka.tools.Constants.Companion.bigFontSize
+import com.ka.courierka.tools.Constants.Companion.buttonFontSize
 
 
 @Composable
 internal fun ForgotScreen(
     navController: NavHostController,
     email:String?,
-    viewModel: ResetPasswordViewModel
+    viewModel: ResetPasswordViewModel = hiltViewModel()
 
 ) {
     val email1 = remember { mutableStateOf("") }
     if (email != null) {
         email1.value = email
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -46,7 +46,7 @@ internal fun ForgotScreen(
     ) {
         Text(
             text = stringResource(id = R.string.forgot_password_title),
-            fontSize = big_font_size.sp,
+            fontSize = bigFontSize.sp,
             color = colorResource(id = R.color.purple_500),
             modifier = Modifier
                 .fillMaxWidth(),
@@ -63,6 +63,6 @@ internal fun ForgotScreen(
                       },
             shape = RoundedCornerShape(round.dp),
             modifier = Modifier.padding(padding.dp).fillMaxWidth()
-        ) { Text(stringResource(id = R.string.reset_password), fontSize = button_font_size.sp) }
+        ) { Text(stringResource(id = R.string.reset_password), fontSize = buttonFontSize.sp) }
     }
 }

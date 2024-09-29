@@ -10,11 +10,10 @@ internal interface AppComponent {
     fun inject(mainActivity: MainActivity)
 
     @Component.Factory
-    interface Factory{
-
+    interface Factory {
         fun create(
             @BindsInstance
             context: Context
-        ):AppComponent
+        ): AppComponent
     }
 }

@@ -1,6 +1,6 @@
 package com.ka.courierka.courier
 
-import android.util.Log
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,14 +37,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.ka.courierka.tools.Constants.Companion.border_size
-import com.ka.courierka.tools.Constants.Companion.button_font_size
-import com.ka.courierka.tools.Constants.Companion.font_size_in_order
-import com.ka.courierka.tools.Constants.Companion.height_in_order
-import com.ka.courierka.tools.Constants.Companion.padding
 import com.ka.courierka.tools.Constants.Companion.round
 import com.ka.courierka.R
 import com.ka.courierka.navigation.Routes
+import com.ka.courierka.tools.Constants.Companion.borderSize
+import com.ka.courierka.tools.Constants.Companion.buttonFontSize
+import com.ka.courierka.tools.Constants.Companion.fontSizeInOrder
+import com.ka.courierka.tools.Constants.Companion.heightInOrder
+import com.ka.courierka.tools.Constants.Companion.padding
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,17 +54,9 @@ internal fun UserScreen(
     userId:String?,
     viewModel: UsersViewModel = hiltViewModel()
 ) {
-
-    viewModel.getOrders()
-    Log.d("iduid172", "${userId}  ")
-    var curentid: String = ""
-    var deliv = false
-    var oo = stringResource(id = R.string.old_order)
-    var oldorder = remember { mutableStateOf(oo) }
-    var orders = viewModel.getOrderes().observeAsState(listOf()).value
-
-
-    Log.d("itemCoin1", "Order: ${orders}")
+    var oo = stringResource(id = R.string.oldOrder)
+    val oldorder = remember { mutableStateOf(oo) }
+    val orders = viewModel.getOrderes().observeAsState(listOf()).value
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -72,15 +64,14 @@ internal fun UserScreen(
     ) {
         Column {
             TopAppBar(
-                title = { Text(stringResource(id = R.string.select_an_order), fontSize = button_font_size.sp) },
-//                navigationIcon={ IconButton({ }) { Icon(Icons.Filled.Menu, contentDescription = "Меню")}},
+                title = { Text(stringResource(id = R.string.select_an_order), fontSize = buttonFontSize.sp) },
                 actions = {
                     IconButton({
                         viewModel.logout()
                         navController.navigate(route = Routes.Login.routes)
                     }) { Icon(Icons.Filled.Home, contentDescription = "О приложении")}
                     IconButton({
-                        navController.navigate(route = Routes.StatusUser.routes + "/${userId}")
+                        navController.navigate(route = Routes.StatusUser.routes + "$userId")
                     }) { Icon(Icons.Filled.Settings, contentDescription = "Поиск") }
                 },
             )
@@ -91,21 +82,13 @@ internal fun UserScreen(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Button(
-                onClick = { navController.navigate(Routes.NewOrder.routes + "/${userId}") },
+                onClick = { navController.navigate(Routes.NewOrder.routes + "$userId") },
                 shape = RoundedCornerShape(round.dp),
                 modifier = Modifier.padding(padding.dp)
-            ) { Text(stringResource(id = R.string.new_order), fontSize = button_font_size.sp) }
+            ) { Text(stringResource(id = R.string.new_order), fontSize = buttonFontSize.sp) }
             Button(
                 onClick = {
-
-                    if (oldorder.value.equals("Old order")) {
-                        oldorder.value = "Orders"
-                        deliv = false
-                    } else {
-                        oldorder.value = "Old order"
-                        deliv = true
-                    }
-
+                    oldorder.value = deliv(oldorder.value)
                 },
                 shape = RoundedCornerShape(round.dp),
                 modifier = Modifier.padding(padding.dp)
@@ -117,9 +100,9 @@ internal fun UserScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.LightGray)
-                        .border(width = border_size.dp, color = Color.White)
-                        .height(height_in_order.dp)
-                        .clickable(onClick = { navController.navigate(route = Routes.Order.routes + "/${order.id}" + "/${userId}") }),
+                        .border(width = borderSize.dp, color = Color.White)
+                        .height(heightInOrder.dp)
+                        .clickable(onClick = { navController.navigate(route = Routes.Order.routes + "${order.id},${userId}") }),
                     horizontalArrangement = Arrangement.SpaceBetween,
 
                     ) {
@@ -130,11 +113,11 @@ internal fun UserScreen(
                             order.phone,
                             order.time
                         ),
-                        fontSize = font_size_in_order.sp
+                        fontSize = fontSizeInOrder.sp
                     )
                     Box(
                         modifier = Modifier
-                            .size(height_in_order.dp)
+                            .size(heightInOrder.dp)
                             .background(color = Color.Red)
                     )
                 }
@@ -142,4 +125,14 @@ internal fun UserScreen(
         }
     }
 
+
+}
+fun deliv(nameButton: String):String{
+    var nameButton= nameButton
+    if (nameButton.equals("Old order")) {
+        nameButton = "Orders"
+    } else {
+        nameButton = "Old order"
+    }
+    return nameButton
 }

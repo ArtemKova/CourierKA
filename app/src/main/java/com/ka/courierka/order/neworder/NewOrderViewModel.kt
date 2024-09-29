@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.database.database
 import com.ka.courierka.order.Order
 
 class NewOrderViewModel : ViewModel() {

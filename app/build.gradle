@@ -66,7 +66,7 @@ dependencies {
 
     // Add the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.auth)
     def nav_version = "2.7.6"
     // Java language implementation
     implementation(libs.androidx.navigation.fragment)
@@ -93,7 +93,7 @@ dependencies {
     // Kotlin
     //noinspection GradleDependency
     implementation(libs.androidx.fragment.ktx)
-    implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.database)
     implementation libs.kotlinx.coroutines.core
     implementation libs.kotlinx.coroutines.android
     implementation libs.androidx.lifecycle.viewmodel.ktx
@@ -134,9 +134,8 @@ dependencies {
     annotationProcessor libs.dagger.compiler
     ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.firebase.firestore)
 
-//    implementation libs.hilt.android.v231alpha
-//    kapt libs.hilt.android.compiler.v237
 
 
 
