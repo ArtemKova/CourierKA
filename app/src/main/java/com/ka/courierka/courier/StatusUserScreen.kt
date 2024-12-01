@@ -1,16 +1,19 @@
 package com.ka.courierka.courier
 
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,12 +40,17 @@ internal fun StatusUserScreen(
     userId: String?,
     viewModel: UsersViewModel = hiltViewModel()
 ) {
-    val users = rememberSaveable {
-        mutableStateOf(User("","", "", 0, false, false, "", ""))
-
+    val users = remember {
+        mutableStateOf(User("", "", "", 0, false, false, "", ""))
     }
+    var user = viewModel.getUser().value
     var customer = viewModel.users.observeAsState().value
-    val selected = remember { mutableStateOf(customer?.get(0)?.courier?:true) }
+    Log.d("Customer110", "$customer")
+    if (users.value.id == "" && customer!=null) {
+        users.value = customer?.get(0)!!
+    }
+
+    val selected = remember { mutableStateOf(users.value.courier ?: true) }
     Column {
 
         Column(
@@ -57,43 +66,64 @@ internal fun StatusUserScreen(
                     .fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
-            TextField(
-                value = users.value.name , onValueChange = { changedName ->
-                    users.value.name = changedName
-                }, placeholder = { Text(customer?.get(0)?.name?:"-") }, modifier = Modifier
-                    .padding(padding.dp)
-                    .fillMaxWidth()
-            )
-            TextField(
-                value = users.value.lastName, onValueChange = { changedLastName ->
-                    users.value.lastName = changedLastName
-                }, placeholder = { Text(customer?.get(0)?.lastName?:"-") }, modifier = Modifier
-                    .padding(padding.dp)
-                    .fillMaxWidth()
-            )
-            TextField(
-                value = "${users.value.age}", onValueChange = { changedAge ->
-                    users.value.age = changedAge.toInt()
-
-                }, placeholder = { Text("${customer?.get(0)?.age?:"0"}") },
-                modifier = Modifier
-                    .padding(padding.dp)
-                    .fillMaxWidth()
-            )
-            TextField(
-                value = users.value.city, onValueChange = { changedCity ->
-                    users.value.city = changedCity
-                }, placeholder = { Text(customer?.get(0)?.city?:"-") },
-                modifier = Modifier
-                    .padding(padding.dp)
-                    .fillMaxWidth()
-            )
-
-            if (selected.value) {
-                users.value.typeUser = "Courier"
-            } else {
-                users.value.typeUser = "Customer"
+            var name = remember { mutableStateOf(users.value.name) }
+            if (name.value == "") {
+                name.value = users.value.name
             }
+            TextField(
+                value = name.value, onValueChange = { changedName ->
+                    name.value = changedName
+                    users.value.name = name.value
+                },  modifier = Modifier
+                    .padding(padding.dp)
+                    .fillMaxWidth()
+            )
+            var lastName = remember { mutableStateOf(users.value.lastName) }
+            if (lastName.value == "") {
+                lastName.value = users.value.lastName
+            }
+            TextField(
+                value = lastName.value, onValueChange = { changedLastName ->
+                    lastName.value = changedLastName
+                    users.value.lastName = lastName.value
+                },  modifier = Modifier
+                    .padding(padding.dp)
+                    .fillMaxWidth()
+            )
+            val age = remember { mutableStateOf(users.value.age.toString()) }
+            if (age.value == ""|| age.value == "0") {
+               age.value = users.value.age.toString()
+            }
+            TextField(
+                value = age.value, onValueChange = { changedAge ->
+                    age.value = changedAge
+                    users.value.age = age.value.toInt()
+                },
+                modifier = Modifier
+                    .padding(padding.dp)
+                    .fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+            var city = remember { mutableStateOf(users.value.city) }
+            if (city.value == "") {
+                city.value = users.value.city
+            }
+            TextField(
+                value = city.value, onValueChange = { changedCity ->
+                    city.value = changedCity
+                    users.value.city = city.value
+                },
+                modifier = Modifier
+                    .padding(padding.dp)
+                    .fillMaxWidth()
+            )
+            var typeUser = remember { mutableStateOf(users.value.typeUser) }
+            if (selected.value) {
+                typeUser.value = "Courier"
+            } else {
+                typeUser.value = "Customer"
+            }
+            users.value.typeUser = typeUser.value
             Text(
                 text = users.value.typeUser,
                 modifier = Modifier
@@ -104,29 +134,31 @@ internal fun StatusUserScreen(
                     .padding(padding.dp)
                     .fillMaxWidth()
             )
-
-
             Row {
                 Button(onClick = {
-                        userId?.let {
-                            viewModel.setChangeUserData(
-                                it,
-                                users.value.name,
-                                users.value.lastName,
-                                users.value.age,
-                                users.value.city,
-                                selected.value
-                            )
-                        }
+                    userId?.let {
+                        viewModel.setChangeUserData(
+                            it,
+                            users.value.name,
+                            users.value.lastName,
+                            users.value.age,
+                            users.value.city,
+                            selected.value
+                        )
+                    }
                     navController.navigate(route = Routes.User.routes + "/${userId}")
                 }, modifier = Modifier.padding(padding.dp)) {
                     Text(stringResource(id = R.string.save), fontSize = buttonFontSize.sp)
                 }
-                Button(onClick = {navController.navigate(route = Routes.User.routes + "/${userId}")}, modifier = Modifier.padding(
-                    padding.dp)) {
+                Button(
+                    onClick = { navController.navigate(route = Routes.User.routes + "/${userId}") },
+                    modifier = Modifier.padding(
+                        padding.dp
+                    )
+                ) {
                     Text(stringResource(id = R.string.cancel), fontSize = buttonFontSize.sp)
 
-                    
+
                 }
             }
         }

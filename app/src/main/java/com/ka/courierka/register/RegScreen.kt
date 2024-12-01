@@ -33,17 +33,20 @@ import androidx.navigation.NavHostController
 import com.ka.courierka.R
 import com.ka.courierka.courier.User
 import com.ka.courierka.navigation.Routes
+import com.ka.courierka.tools.Constants
 
 @Composable
 internal fun RegScreen(
     navController: NavHostController,
     viewModel: RegistrationViewModel = hiltViewModel()
-){
+) {
 
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-    val users = rememberSaveable {
-        mutableStateOf(User("","", "", 0, false, false, "", ""))}
+    val users = remember {
+        mutableStateOf(User("", "", "", 0, false, false, "", ""))
+    }
+    val age = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
@@ -71,68 +74,84 @@ internal fun RegScreen(
             .padding(10.dp)
             .fillMaxWidth()
         )
+        var name = remember { mutableStateOf(users.value.name) }
+        if (name.value == "") {
+            name.value = users.value.name
+        }
         TextField(
-            value = users.value.name,
-            onValueChange = { name ->
-                users.value.name = name
-            },
-            placeholder = { Text(stringResource(id = R.string.name)) },
-            modifier = Modifier
-                .padding(10.dp)
+            value = name.value, onValueChange = { changedName ->
+                name.value = changedName
+                users.value.name = name.value
+            }, modifier = Modifier
+                .padding(Constants.padding.dp)
                 .fillMaxWidth()
         )
+        var lastName = remember { mutableStateOf(users.value.lastName) }
+        if (lastName.value == "") {
+            lastName.value = users.value.lastName
+        }
         TextField(
-            value = users.value.lastName,
-            onValueChange = { changedLastName ->
-                users.value.lastName= changedLastName
-            },
-            placeholder = { Text(stringResource(id = R.string.last_name)) },
-            modifier = Modifier
-                .padding(10.dp)
+            value = lastName.value, onValueChange = { changedLastName ->
+                lastName.value = changedLastName
+                users.value.lastName = lastName.value
+            }, modifier = Modifier
+                .padding(Constants.padding.dp)
                 .fillMaxWidth()
         )
+        val age = remember { mutableStateOf(users.value.age.toString()) }
+        if (age.value == "" || age.value == "0") {
+            age.value = users.value.age.toString()
+        }
         TextField(
-            value = "${users.value.age}",
-            onValueChange = { changedAge ->
-                if (changedAge == ""){users.value.age = 0}
-                else {
-                    users.value.age = changedAge.toInt()
-                }
+            value = age.value, onValueChange = { changedAge ->
+                age.value = changedAge
+                users.value.age = age.value.toInt()
             },
-            placeholder = { Text(stringResource(id = R.string.age)) },
             modifier = Modifier
-                .padding(10.dp)
+                .padding(Constants.padding.dp)
                 .fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
+        var city = remember { mutableStateOf(users.value.city) }
+        if (city.value == "") {
+            city.value = users.value.city
+        }
         TextField(
-            value = users.value.city,
-            onValueChange = { changedCity ->
-                users.value.city = changedCity
-
+            value = city.value, onValueChange = { changedCity ->
+                city.value = changedCity
+                users.value.city = city.value
             },
-            placeholder = { Text(stringResource(id = R.string.city)) },
             modifier = Modifier
-                .padding(10.dp)
+                .padding(Constants.padding.dp)
                 .fillMaxWidth()
         )
         Box {
             IconButton(onClick = { expanded.value = true }) {
                 Icon(Icons.Default.MoreVert, contentDescription = "Показать меню")
             }
+            var typeUser = remember { mutableStateOf(users.value.typeUser) }
+            var courier = remember { mutableStateOf(false) }
             DropdownMenu(
                 expanded = expanded.value,
                 onDismissRequest = { expanded.value = false }
             ) {
                 DropdownMenuItem(
-                    onClick = { users.value.courier = false },
-                    text = { Text(stringResource(id = R.string.courier)) }
+                    onClick = { courier.value = false },
+                    text = {
+                        Text(stringResource(id = R.string.courier))
+                        typeUser.value = stringResource(id = R.string.courier)
+                    }
                 )
                 DropdownMenuItem(
-                    onClick = { users.value.courier = true },
-                    text = { Text(stringResource(id = R.string.customer)) }
+                    onClick = { courier.value = true },
+                    text = {
+                        Text(stringResource(id = R.string.customer))
+                        typeUser.value = stringResource(id = R.string.customer)
+                    }
                 )
             }
+            users.value.courier = courier.value
+            users.value.typeUser = typeUser.value
         }
         Button(
             onClick = {
